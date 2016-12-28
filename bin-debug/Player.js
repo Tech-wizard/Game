@@ -7,13 +7,13 @@ var Player = (function (_super) {
         this._body = new egret.Bitmap;
         this._body.texture = RES.getRes(ad);
         this.addChild(this._body);
-        this._body.width = 53;
-        this._body.height = 53;
-        this._body.anchorOffsetX = this._body.width / 2;
-        this._body.anchorOffsetY = this._body.height / 2;
+        this._body.width = TileMap.TILE_SIZE;
+        this._body.height = TileMap.TILE_SIZE;
+        // this._body.anchorOffsetX = this._body.width / 2;
+        // this._body.anchorOffsetY = this._body.height / 2;
         this._stateMachine = new StateMachine();
-        this._body.x = 26.5;
-        this._body.y = 26.5;
+        // this._body.x = TileMap.TILE_SIZE/2;
+        // this._body.y = TileMap.TILE_SIZE/2;
         this._ifidle = true;
         this._ifwalk = false;
     }

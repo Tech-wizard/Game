@@ -4,6 +4,7 @@ class TileMap extends egret.DisplayObjectContainer {
     public static TILE_SIZE: number = 53;
 
     _player: Player;
+    _speed: number = 3;
     _block: egret.Bitmap;
     _astar: AStar;
     public _i: number;
@@ -62,12 +63,18 @@ class TileMap extends egret.DisplayObjectContainer {
                 var current = path.shift();
 
 
+
+
+
                 let ticker = () => {
                     playerX = Math.floor(this._player._body.x / TileMap.TILE_SIZE);
                     playerY = Math.floor(this._player._body.y / TileMap.TILE_SIZE);
-                    this._player._body.x += (current.x - playerX);
-                    this._player._body.y += (current.y - playerY);
-                    if (playerX == current.x && playerY == current.y) {
+                    this._player._body.x += this._speed * (current.x - playerX);
+                    this._player._body.y += this._speed * (current.y - playerY);
+                    if (playerX == current.x && playerY == current.y ) {
+                        this._player._body.x = current.x * TileMap.TILE_SIZE;
+                        this._player._body.y = current.y * TileMap.TILE_SIZE;
+
                         if (this._astar._path.length == 0) {
                             egret.Ticker.getInstance().unregister(ticker, this);
                         }
@@ -82,6 +89,11 @@ class TileMap extends egret.DisplayObjectContainer {
 
 
 
+// &&
+//                      this._player._body.x <= current.x * TileMap.TILE_SIZE + this._speed &&
+//                       this._player._body.x >= current.x * TileMap.TILE_SIZE - this._speed &&
+//                       this._player._body.y <= current.y * TileMap.TILE_SIZE + this._speed &&
+//                       this._player._body.y >= current.y * TileMap.TILE_SIZE - this._speed)
 
 
                 // this._i = 1;

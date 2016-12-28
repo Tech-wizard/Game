@@ -2,6 +2,7 @@ var TileMap = (function (_super) {
     __extends(TileMap, _super);
     function TileMap(player) {
         _super.call(this);
+        this._speed = 3;
         this.moveX = [];
         this.moveY = [];
         this.init();
@@ -42,9 +43,15 @@ var TileMap = (function (_super) {
                 var ticker_1 = function () {
                     playerX = Math.floor(_this._player._body.x / TileMap.TILE_SIZE);
                     playerY = Math.floor(_this._player._body.y / TileMap.TILE_SIZE);
-                    _this._player._body.x += (current.x - playerX);
-                    _this._player._body.y += (current.y - playerY);
-                    if (playerX == current.x && playerY == current.y) {
+                    _this._player._body.x += _this._speed * (current.x - playerX);
+                    _this._player._body.y += _this._speed * (current.y - playerY);
+                    if (playerX == current.x && playerY == current.y &&
+                        _this._player._body.x <= current.x * TileMap.TILE_SIZE + _this._speed &&
+                        _this._player._body.x >= current.x * TileMap.TILE_SIZE - _this._speed &&
+                        _this._player._body.y <= current.y * TileMap.TILE_SIZE + _this._speed &&
+                        _this._player._body.y >= current.y * TileMap.TILE_SIZE - _this._speed) {
+                        _this._player._body.x = current.x * TileMap.TILE_SIZE;
+                        _this._player._body.y = current.y * TileMap.TILE_SIZE;
                         if (_this._astar._path.length == 0) {
                             egret.Ticker.getInstance().unregister(ticker_1, _this);
                         }

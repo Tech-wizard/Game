@@ -148,8 +148,8 @@ class PickHeroScene {
 
         var Dpanel_1: DialoguePanel = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了，去找还有希望被拯救的形状吧");
         var Dpanel_2: DialoguePanel = new DialoguePanel("我还有救，但变得不规则好像也没什么不好，先跟我较量看看吧");
-        var NPC_1: NPC = new NPC("NPC_1", "npc_1_png", 150, 250, Dpanel_1);
-        var NPC_2: NPC = new NPC("NPC_2", "npc_2_png", 250, 850, Dpanel_2);
+        var NPC_1: NPC = new NPC("NPC_1", "npc_1_png", 23.5+106, 23.5+5*53, Dpanel_1);
+        var NPC_2: NPC = new NPC("NPC_2", "npc_2_png", 23.5+5*53, 23.5+12*53, Dpanel_2);
 
         Dpanel_1.linkNPC = NPC_1;
         Dpanel_2.linkNPC = NPC_2;

@@ -21,8 +21,8 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
         this.y = y;
         this._body.width = this._body.width / 2;
         this._body.height = this._body.height / 2;
-        this._emoji.width = 80;
-        this._emoji.height = 80;
+        this._emoji.width = 70;
+        this._emoji.height = 70;
         this._emoji.y = -60;
         this._emoji.x = -5;
         this._emoji.alpha = 0;
