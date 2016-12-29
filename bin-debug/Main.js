@@ -101,7 +101,6 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
-        var _this = this;
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
         var BlackMask = new egret.Shape();
@@ -111,120 +110,114 @@ var Main = (function (_super) {
         BlackMask.width = stageW;
         BlackMask.height = stageH;
         this.addChild(BlackMask);
-        var WhiteMask = new egret.Shape();
-        WhiteMask.graphics.beginFill(0xFFFFFF, 1);
-        WhiteMask.graphics.drawRect(0, 0, stageW, stageH);
-        WhiteMask.graphics.endFill();
-        WhiteMask.width = stageW;
-        WhiteMask.height = stageH;
-        //this.addChild(WhiteMask);
-        //WhiteMask.alpha = 0;
-        var back = this.createBitmapByName("menu_jpg");
-        this.addChild(back);
-        var stageW = this.stage.stageWidth;
-        var stageH = this.stage.stageHeight;
-        back.width = stageW;
-        back.height = stageH;
-        back.y = -150;
-        var count = 0;
-        egret.Ticker.getInstance().register(function () {
-            if (count < 5) {
-                back.scaleY *= 1.005;
-            }
-            else if (count < 10 || count >= 5) {
-                back.scaleY /= 1.005;
-            }
-            count += 0.5;
-            if (count >= 10) {
-                count = 0;
-            }
-        }, this);
-        // var icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
-        // this.addChild(icon);
-        // icon.x = 26;
-        // icon.y = 33;
-        // var line = new egret.Shape();
-        // line.graphics.lineStyle(2,0xffffff);
-        // line.graphics.moveTo(0,0);
-        // line.graphics.lineTo(0,117);
-        // line.graphics.endFill();
-        // line.x = 172;
-        // line.y = 61;
-        // this.addChild(line);
-        var Title = new egret.TextField();
-        Title.textColor = 0xffffff;
-        Title.width = stageW - 172;
-        Title.textAlign = "center";
-        Title.text = "二维位面之纯形争霸";
-        Title.size = 50;
-        Title.fontFamily = '黑体';
-        Title.x = 100;
-        Title.y = 100;
-        this.addChild(Title);
-        var start = new egret.TextField();
-        start.textColor = 0xffffff;
-        start.width = stageW - 172;
-        start.textAlign = "center";
-        start.text = "开始游戏";
-        start.size = 40;
-        start.fontFamily = '黑体';
-        start.x = 90;
-        start.y = 800;
-        this.addChild(start);
-        var material = new egret.TextField();
-        material.textColor = 0xffffff;
-        material.width = stageW - 172;
-        material.textAlign = "center";
-        material.text = "背景资料";
-        material.size = 40;
-        material.fontFamily = '黑体';
-        material.x = 90;
-        material.y = 850;
-        this.addChild(material);
-        var about = new egret.TextField();
-        about.textColor = 0xffffff;
-        about.width = stageW - 172;
-        about.textAlign = "center";
-        about.text = "游戏理念";
-        about.size = 40;
-        about.fontFamily = '黑体';
-        about.x = 90;
-        about.y = 900;
-        this.addChild(about);
-        // var textfield = new egret.TextField();
-        // this.addChild(textfield);
-        // textfield.alpha = 0;
-        // textfield.width = stageW - 172;
-        // textfield.textAlign = egret.HorizontalAlign.CENTER;
-        // textfield.size = 24;
-        // textfield.textColor = 0xffffff;
-        // textfield.x = 172;
-        // textfield.y = 135;
-        // this.textfield = textfield;
         var pickHeroScene = new PickHeroScene();
-        start.touchEnabled = true;
-        start.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-            _this.removeChild(start);
-            _this.removeChild(material);
-            _this.removeChild(about);
-            _this.removeChild(Title);
-            _this.removeChild(back);
-            //BlackMask.alpha = 0;
-            //WhiteMask.alpha = 1;
-            pickHeroScene.showPick(stageW, _this);
-            var hero;
-            switch (pickHeroScene.ad) {
-                case "sanjiao_png":
-                    hero = SetTriangle();
-                    break;
-                case "fangkuai_png":
-                    hero = SetSquare();
-                    break;
-                case "zhengyuan_png":
-                    hero = SetCircle();
-                    break;
-            }
-        }, this);
+        pickHeroScene.hero = SetTriangle();
+        var battle = new Battle(pickHeroScene.hero, 1, 6, 6);
+        this.addChild(battle);
+        // var WhiteMask = new egret.Shape();
+        // WhiteMask.graphics.beginFill(0xFFFFFF, 1);
+        // WhiteMask.graphics.drawRect(0, 0, stageW, stageH);
+        // WhiteMask.graphics.endFill();
+        // WhiteMask.width = stageW;
+        // WhiteMask.height = stageH;
+        // //this.addChild(WhiteMask);
+        // //WhiteMask.alpha = 0;
+        // var back: egret.Bitmap = this.createBitmapByName("menu_jpg");
+        // this.addChild(back);
+        // var stageW: number = this.stage.stageWidth;
+        // var stageH: number = this.stage.stageHeight;
+        // back.width = stageW;
+        // back.height = stageH;
+        // back.y = -150;
+        // var count = 0;
+        // egret.Ticker.getInstance().register(() => {
+        //     if (count < 5) {
+        //         back.scaleY *= 1.005;
+        //     }
+        //     else if (count < 10 || count >= 5) {
+        //         back.scaleY /= 1.005;
+        //     }
+        //     count += 0.5;
+        //     if (count >= 10) {
+        //         count = 0;
+        //     }
+        // }, this);
+        // // var icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
+        // // this.addChild(icon);
+        // // icon.x = 26;
+        // // icon.y = 33;
+        // // var line = new egret.Shape();
+        // // line.graphics.lineStyle(2,0xffffff);
+        // // line.graphics.moveTo(0,0);
+        // // line.graphics.lineTo(0,117);
+        // // line.graphics.endFill();
+        // // line.x = 172;
+        // // line.y = 61;
+        // // this.addChild(line);
+        // var Title = new egret.TextField();
+        // Title.textColor = 0xffffff;
+        // Title.width = stageW - 172;
+        // Title.textAlign = "center";
+        // Title.text = "二维位面之纯形争霸";
+        // Title.size = 50;
+        // Title.fontFamily = '黑体';
+        // Title.x = 100;
+        // Title.y = 100;
+        // this.addChild(Title);
+        // var start = new egret.TextField();
+        // start.textColor = 0xffffff;
+        // start.width = stageW - 172;
+        // start.textAlign = "center";
+        // start.text = "开始游戏";
+        // start.size = 40;
+        // start.fontFamily = '黑体';
+        // start.x = 90;
+        // start.y = 800;
+        // this.addChild(start);
+        // var material = new egret.TextField();
+        // material.textColor = 0xffffff;
+        // material.width = stageW - 172;
+        // material.textAlign = "center";
+        // material.text = "背景资料";
+        // material.size = 40;
+        // material.fontFamily = '黑体';
+        // material.x = 90;
+        // material.y = 850;
+        // this.addChild(material);
+        // var about = new egret.TextField();
+        // about.textColor = 0xffffff;
+        // about.width = stageW - 172;
+        // about.textAlign = "center";
+        // about.text = "游戏理念";
+        // about.size = 40;
+        // about.fontFamily = '黑体';
+        // about.x = 90;
+        // about.y = 900;
+        // this.addChild(about);
+        // start.touchEnabled = true;
+        // start.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+        //     this.removeChild(start);
+        //     this.removeChild(material);
+        //     this.removeChild(about);
+        //     this.removeChild(Title);
+        //     this.removeChild(back);
+        //     //BlackMask.alpha = 0;
+        //     //WhiteMask.alpha = 1;
+        //     pickHeroScene.showPick(stageW, this);
+        //     switch (pickHeroScene.ad) {
+        //         case "sanjiao_png":
+        //             pickHeroScene.hero = SetTriangle();
+        //             break;
+        //         case "fangkuai_png":
+        //             pickHeroScene.hero = SetSquare();
+        //             break;
+        //         case "zhengyuan_png":
+        //             pickHeroScene.hero = SetCircle();
+        //             break;
+        //     }
+        // }, this);
+        // var battle = new Battle(pickHeroScene.hero,1,6,6);
+        // this.addChild(battle);
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。

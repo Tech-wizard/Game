@@ -63,6 +63,7 @@ class GameScene {
 class PickHeroScene {
     private static scene: GameScene;
     ad: string;
+    hero:Hero;
     public static replaceScene(scene: GameScene) {
         PickHeroScene.scene = scene;
     }

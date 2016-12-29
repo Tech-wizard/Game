@@ -41,7 +41,7 @@ var TaskService = (function () {
         if (task.id == id) {
             task.status = TaskStatus.DURING;
             task.onAccept();
-            console.log("onacc后" + task.status);
+            console.log("任务状态" + task.status);
             this.notify(this.taskList[id]);
             return ErrorCode.SUCCESS;
         }

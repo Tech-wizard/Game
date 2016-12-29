@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "description_json,color_png,Dcolor_jpg,Fcolor_jpg,Gcolor_jpg,End_jpg,Swb_jpg,Awb_jpg,Zwb_jpg,menu_jpg,preloading_gif,Stars_jpg,Universe_jpg,people_jpg,buguize_1_png,buguize_2_png,fangkuai_png,sanjiao_png,zhengyuan_png,white_png,zhangai_jpg,Black_png,White_png,Skill_1_png,Skill_3_png,Skill_5_png,Skill_2_png,Skill_4_png,0_png,npc_1_png,close_png,npc_2_png,notice_png,question_png,block_png,enemy_1_png",
+			"keys": "description_json,color_png,Dcolor_jpg,Fcolor_jpg,Gcolor_jpg,End_jpg,Swb_jpg,Awb_jpg,Zwb_jpg,menu_jpg,preloading_gif,Stars_jpg,Universe_jpg,people_jpg,buguize_1_png,buguize_2_png,fangkuai_png,sanjiao_png,zhengyuan_png,white_png,zhangai_jpg,Black_png,White_png,Skill_1_png,Skill_3_png,Skill_5_png,Skill_2_png,Skill_4_png,0_png,npc_1_png,close_png,npc_2_png,notice_png,question_png,block_png,enemy_1_png,block2_png",
 			"name": "preload"
 		}
 	],
@@ -185,6 +185,11 @@
 			"name": "enemy_1_png",
 			"type": "image",
 			"url": "assets/enemy_1.png"
+		},
+		{
+			"name": "block2_png",
+			"type": "image",
+			"url": "assets/block2.png"
 		}
 	]
 }
