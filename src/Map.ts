@@ -368,9 +368,8 @@ class Tile extends egret.DisplayObjectContainer {
         this.data = data;
         var bitmap = new egret.Bitmap();
         bitmap.texture = RES.getRes(data.image);
-        bitmap.width = 53;
-        bitmap.height = 53;
-        //this.addChild(bitmap);
+        bitmap.width = TileMap.TILE_SIZE;
+        bitmap.height = TileMap.TILE_SIZE;
         this.x = data.x * TileMap.TILE_SIZE;
         this.y = data.y * TileMap.TILE_SIZE;
         this.addChild(bitmap);

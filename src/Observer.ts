@@ -95,18 +95,18 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
 
         this.textField = new egret.TextField();
         this.textField.text = "   任务进程    ";
-        // this.textField.x = x;
-        // this.textField.x = y;
+        this.textField.x = 0;
+        this.textField.x = 0;
 
         this.textField2 = new egret.TextField();
         this.textField2.text = "  任务状态    ";
-        // this.textField2.x = x ;
-        // this.textField2.y = y + 30;
+        this.textField2.x = 0;
+        this.textField2.y = 30;
 
         this.textField3 = new egret.TextField();
         this.textField2.text = "   进度    ";
-        // this.textField3.x = x ;
-        // this.textField3.y = y + 55;
+        this.textField3.x = 0;
+        this.textField3.y = 55;
         this.addChild(this.body);
         this.addChild(this.textField);
         this.addChild(this.textField2);
@@ -116,7 +116,25 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
 
     onChange(task: Task): void {
         this.textField.text = task.desc;
-        this.textField2.text = task.name + " :" + task.status.toString();
+        var tf:string;
+        switch(task.status){
+            case 0:
+            tf = "未可接受";
+            break;
+            case 1:
+            tf = "可接受";
+            break;
+            case 2:
+            tf = "进行中";
+            break;
+            case 3:
+            tf = "可完成";
+            break;
+            case 4:
+            tf = "已完成";
+            break;
+        }
+        this.textField2.text = task.name + " :" + tf;
         this.textField3.text = task.name + " :" + task.getcurrent() + "/" + task.total;
     }
 

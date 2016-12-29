@@ -45,11 +45,7 @@ var TileMap = (function (_super) {
                     playerY = Math.floor(_this._player._body.y / TileMap.TILE_SIZE);
                     _this._player._body.x += _this._speed * (current.x - playerX);
                     _this._player._body.y += _this._speed * (current.y - playerY);
-                    if (playerX == current.x && playerY == current.y &&
-                        _this._player._body.x <= current.x * TileMap.TILE_SIZE + _this._speed &&
-                        _this._player._body.x >= current.x * TileMap.TILE_SIZE - _this._speed &&
-                        _this._player._body.y <= current.y * TileMap.TILE_SIZE + _this._speed &&
-                        _this._player._body.y >= current.y * TileMap.TILE_SIZE - _this._speed) {
+                    if (playerX == current.x && playerY == current.y) {
                         _this._player._body.x = current.x * TileMap.TILE_SIZE;
                         _this._player._body.y = current.y * TileMap.TILE_SIZE;
                         if (_this._astar._path.length == 0) {
@@ -279,9 +275,8 @@ var Tile = (function (_super) {
         this.data = data;
         var bitmap = new egret.Bitmap();
         bitmap.texture = RES.getRes(data.image);
-        bitmap.width = 53;
-        bitmap.height = 53;
-        //this.addChild(bitmap);
+        bitmap.width = TileMap.TILE_SIZE;
+        bitmap.height = TileMap.TILE_SIZE;
         this.x = data.x * TileMap.TILE_SIZE;
         this.y = data.y * TileMap.TILE_SIZE;
         this.addChild(bitmap);

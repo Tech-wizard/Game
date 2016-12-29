@@ -216,11 +216,11 @@ function SetTriangle() {
     sanjiao.CONUP = 7;
     sanjiao.STRUP = 7;
     sanjiao.skills = [
-        { x: 30, y: 900, name: "射击", image: "Skill_1_png", inf: "普通远程攻击", ratio: 100, MPneed: 5, distance: 2, type: 0, num: 1 },
-        { x: 160, y: 900, name: "轰击", image: "Skill_2_png", inf: "聚集锋芒的重型远程攻击", ratio: 350, MPneed: 70, distance: 3, type: 0, num: 1 },
-        { x: 290, y: 900, name: "划击", image: "Skill_3_png", inf: "不擅长的近战攻击", ratio: 80, MPneed: 0, distance: 1, type: 0, num: 1 },
-        { x: 420, y: 900, name: "尖锐化", image: "Skill_4_png", inf: "三角高速旋转，本次战斗中永久提升速度", ratio: 100, MPneed: 100, distance: 0, type: 1, num: 1 },
-        { x: 550, y: 900, name: "三角移动", image: "Skill_5_png", inf: "移动一格并回复10MP", ratio: 0, MPneed: -10, distance: 1, type: 4, num: 1 },
+        { x: 30, y: 800, name: "射击", image: "Skill_1_png", inf: "普通远程攻击", ratio: 100, MPneed: 5, distance: 2, type: 0, num: 1 },
+        { x: 160, y: 800, name: "轰击", image: "Skill_2_png", inf: "聚集锋芒的重型远程攻击", ratio: 350, MPneed: 70, distance: 3, type: 0, num: 1 },
+        { x: 290, y: 800, name: "划击", image: "Skill_3_png", inf: "不擅长的近战攻击", ratio: 80, MPneed: 0, distance: 1, type: 0, num: 1 },
+        { x: 420, y: 800, name: "尖锐化", image: "Skill_4_png", inf: "三角高速旋转，本次战斗中永久提升速度", ratio: 100, MPneed: 100, distance: 0, type: 1, num: 1 },
+        { x: 550, y: 800, name: "三角移动", image: "Skill_5_png", inf: "移动一格并回复10MP", ratio: 0, MPneed: -10, distance: 1, type: 4, num: 1 },
     ];
     return sanjiao;
 }
@@ -229,11 +229,11 @@ function SetSquare() {
     fangkuai.CONUP = 10;
     fangkuai.STRUP = 10;
     fangkuai.skills = [
-        { x: 30, y: 900, name: "棱刮", image: "", inf: "普通近战攻击", ratio: 100, MPneed: 0, distance: 1, type: 0, num: 2 },
-        { x: 160, y: 900, name: "格式打击", image: "", inf: "猛扑对敌人造成重创", ratio: 250, MPneed: 50, distance: 1, type: 0, num: 2 },
-        { x: 290, y: 900, name: "空格", image: "", inf: "向所指方向跳跃一格并撞击敌人", ratio: 125, MPneed: 30, distance: 2, type: 6, num: 2 },
-        { x: 420, y: 900, name: "栅格化", image: "", inf: "方块变得更方了，本次战斗中永久提升攻击力", ratio: 150, MPneed: 5, distance: 2, type: 0, num: 2 },
-        { x: 550, y: 900, name: "方块移动", image: "", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 2 }
+        { x: 30, y: 800, name: "棱刮", image: "", inf: "普通近战攻击", ratio: 100, MPneed: 0, distance: 1, type: 0, num: 2 },
+        { x: 160, y: 800, name: "格式打击", image: "", inf: "猛扑对敌人造成重创", ratio: 250, MPneed: 50, distance: 1, type: 0, num: 2 },
+        { x: 290, y: 800, name: "空格", image: "", inf: "向所指方向跳跃一格并撞击敌人", ratio: 125, MPneed: 30, distance: 2, type: 6, num: 2 },
+        { x: 420, y: 800, name: "栅格化", image: "", inf: "方块变得更方了，本次战斗中永久提升攻击力", ratio: 150, MPneed: 5, distance: 2, type: 0, num: 2 },
+        { x: 550, y: 800, name: "方块移动", image: "", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 2 }
     ];
     return fangkuai;
 }
@@ -242,11 +242,11 @@ function SetCircle() {
     zhengyuan.CONUP = 12;
     zhengyuan.STRUP = 8;
     zhengyuan.skills = [
-        { x: 30, y: 900, name: "碾压", image: "", inf: "普通攻击，命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
-        { x: 160, y: 900, name: "飞盘", image: "", inf: "正圆自身的投影攻击远程攻击，命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
-        { x: 290, y: 900, name: "翻滚", image: "", inf: "直线大幅度移动，回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
-        { x: 420, y: 900, name: "圆滑化", image: "", inf: "正圆变得更加圆润光滑，按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
-        { x: 550, y: 900, name: "正圆移动", image: "", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
+        { x: 30, y: 800, name: "碾压", image: "", inf: "普通攻击，命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
+        { x: 160, y: 800, name: "飞盘", image: "", inf: "正圆自身的投影攻击远程攻击，命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
+        { x: 290, y: 800, name: "翻滚", image: "", inf: "直线大幅度移动，回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
+        { x: 420, y: 800, name: "圆滑化", image: "", inf: "正圆变得更加圆润光滑，按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
+        { x: 550, y: 800, name: "正圆移动", image: "", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
     ];
     return zhengyuan;
 }

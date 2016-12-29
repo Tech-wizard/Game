@@ -137,8 +137,8 @@ var PickHeroScene = (function () {
     p.gamestart = function (main) {
         var Dpanel_1 = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了，去找还有希望被拯救的形状吧");
         var Dpanel_2 = new DialoguePanel("我还有救，但变得不规则好像也没什么不好，先跟我较量看看吧");
-        var NPC_1 = new NPC("NPC_1", "npc_1_png", 23.5 + 106, 23.5 + 5 * 53, Dpanel_1);
-        var NPC_2 = new NPC("NPC_2", "npc_2_png", 23.5 + 5 * 53, 23.5 + 12 * 53, Dpanel_2);
+        var NPC_1 = new NPC("NPC_1", "npc_1_png", TileMap.TILE_SIZE * 4, TileMap.TILE_SIZE * 4, Dpanel_1);
+        var NPC_2 = new NPC("NPC_2", "npc_2_png", TileMap.TILE_SIZE * 6, TileMap.TILE_SIZE * 12, Dpanel_2);
         Dpanel_1.linkNPC = NPC_1;
         Dpanel_2.linkNPC = NPC_2;
         var task_0 = new Task("000", "对话任务", new NPCTalkTaskCondition());
@@ -157,7 +157,7 @@ var PickHeroScene = (function () {
         task_1.status = TaskStatus.UNACCEPTABLE;
         TaskService.getInstance().addTask(task_0);
         TaskService.getInstance().addTask(task_1);
-        var mainPanel = new TaskPanel(50, 500);
+        var mainPanel = new TaskPanel(50, 850);
         TaskService.getInstance().addObserver(mainPanel);
         TaskService.getInstance().addObserver(NPC_1);
         TaskService.getInstance().addObserver(NPC_2);

@@ -12,6 +12,7 @@ var game_file_list = [
 	"bin-debug/User.js",
 	"bin-debug/Battle.js",
 	"bin-debug/Command.js",
+	"bin-debug/Events/ChangeSceneEvent.js",
 	"bin-debug/Grid.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
@@ -25,6 +26,10 @@ var game_file_list = [
 	"bin-debug/Skill.js",
 	"bin-debug/Task.js",
 	"bin-debug/TaskService.js",
+	"bin-debug/control/ViewManager.js",
+	"bin-debug/view/GameEndPanel.js",
+	"bin-debug/view/GamePlayingPanel.js",
+	"bin-debug/view/GameStartPanel.js",
 	//----auto game_file_list end----
 ];
 

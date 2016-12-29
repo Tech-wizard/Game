@@ -4,7 +4,7 @@ var Player = (function (_super) {
         _super.call(this);
         this._i = 0;
         this._ad = ad;
-        this._body = new egret.Bitmap;
+        this._body = new egret.Bitmap();
         this._body.texture = RES.getRes(ad);
         this.addChild(this._body);
         this._body.width = TileMap.TILE_SIZE;
