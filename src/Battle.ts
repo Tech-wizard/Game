@@ -104,6 +104,7 @@ class Battle extends egret.DisplayObjectContainer {
             this.heroSkillsinfo[i].x = this.hero.skills[i].x - 28;
             this.heroSkillsinfo[i].y = this.hero.skills[i].y + 20;
             this.addChild(this.heroSkillsinfo[i]);
+            
         }
 
     }

@@ -62,10 +62,6 @@ class TileMap extends egret.DisplayObjectContainer {
                 var path = this._astar._path;
                 var current = path.shift();
 
-
-
-
-
                 let ticker = () => {
                     playerX = Math.floor(this._player._body.x / TileMap.TILE_SIZE);
                     playerY = Math.floor(this._player._body.y / TileMap.TILE_SIZE);

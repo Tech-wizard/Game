@@ -41,16 +41,54 @@ var GameScene = (function () {
         return GameScene.scene;
     };
     p.moveTo = function (x, y, callback) {
+        var _this = this;
         console.log("开始移动");
-        egret.setTimeout(function () {
-            console.log("结束移动");
-            callback();
-        }, this, 500);
+        var playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE);
+        var playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE);
+        // var playerX: number = 0;
+        // var playerY: number = 0;
+        var gridX = x;
+        var gridY = y;
+        var astar = new AStar();
+        var grid = new Grid(12, 16, config);
+        grid.setStartNode(playerX, playerY);
+        grid.setEndNode(gridX, gridY);
+        //console.log(grid._nodes);
+        if (astar.findPath(grid)) {
+            astar._path.map(function (tile) {
+                console.log("x:" + tile.x + ",y:" + tile.y);
+            });
+            var path = astar._path;
+            var current = path.shift();
+            var ticker_1 = function () {
+                playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE);
+                playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE);
+                GameScene.getCurrentScene().player._body.x += 3 * (current.x - playerX);
+                GameScene.getCurrentScene().player._body.y += 3 * (current.y - playerY);
+                if (playerX == current.x && playerY == current.y) {
+                    GameScene.getCurrentScene().player._body.x = current.x * TileMap.TILE_SIZE;
+                    GameScene.getCurrentScene().player._body.y = current.y * TileMap.TILE_SIZE;
+                    if (astar._path.length == 0) {
+                        console.log("寻路完毕");
+                        egret.Ticker.getInstance().unregister(ticker_1, _this);
+                        egret.setTimeout(function () {
+                            console.log("结束移动");
+                            callback();
+                        }, _this, 500);
+                    }
+                    else {
+                        current = path.shift();
+                    }
+                }
+            };
+            egret.Ticker.getInstance().register(ticker_1, this);
+        }
     };
     p.stopMove = function (callback) {
         console.log("取消移动");
         callback();
     };
+    GameScene.scene = new GameScene();
     return GameScene;
 }());
 egret.registerClass(GameScene,'GameScene');
@@ -137,10 +175,12 @@ var PickHeroScene = (function () {
     p.gamestart = function (main) {
         var Dpanel_1 = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了，去找还有希望被拯救的形状吧");
         var Dpanel_2 = new DialoguePanel("我还有救，但变得不规则好像也没什么不好，先跟我较量看看吧");
-        var NPC_1 = new NPC("NPC_1", "npc_1_png", TileMap.TILE_SIZE * 4, TileMap.TILE_SIZE * 4, Dpanel_1);
-        var NPC_2 = new NPC("NPC_2", "npc_2_png", TileMap.TILE_SIZE * 6, TileMap.TILE_SIZE * 12, Dpanel_2);
-        Dpanel_1.linkNPC = NPC_1;
-        Dpanel_2.linkNPC = NPC_2;
+        this.dp1 = Dpanel_1;
+        this.dp2 = Dpanel_2;
+        var NPC_1 = new NPC("NPC_1", "npc_1_png", TileMap.TILE_SIZE * 4, TileMap.TILE_SIZE * 4, this.dp1);
+        var NPC_2 = new NPC("NPC_2", "npc_2_png", TileMap.TILE_SIZE * 6, TileMap.TILE_SIZE * 12, this.dp2);
+        this.dp1.linkNPC = NPC_1;
+        this.dp2.linkNPC = NPC_2;
         var task_0 = new Task("000", "对话任务", new NPCTalkTaskCondition());
         task_0.fromNpcId = "NPC_1";
         task_0.toNpcId = "NPC_2";
@@ -151,7 +191,7 @@ var PickHeroScene = (function () {
         var task_1 = new Task("001", "杀怪任务", new KillMonsterTaskCondition());
         task_1.fromNpcId = "NPC_2";
         task_1.toNpcId = "NPC_2";
-        task_1.desc = "击败下方的几何体";
+        task_1.desc = "探寻下方的几何体";
         task_1.NPCTaskTalk = "哈哈哈哈哈，放荡不羁";
         task_1.total = 1;
         task_1.status = TaskStatus.UNACCEPTABLE;
@@ -162,8 +202,8 @@ var PickHeroScene = (function () {
         TaskService.getInstance().addObserver(NPC_1);
         TaskService.getInstance().addObserver(NPC_2);
         TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
-        Dpanel_1.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
-        Dpanel_2.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
+        this.dp1.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
+        this.dp2.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
         // var monster_1: MockKillMonsterButton = new MockKillMonsterButton("egret_icon_png", "001");
         // this.addChild(monster_1);
         // monster_1.body.x = 350;
@@ -172,15 +212,16 @@ var PickHeroScene = (function () {
         //SceneService.getInstance().addObserver(monster_1);
         SceneService.getInstance().addObserver(task_1.condition);
         var player = new Player(this.ad);
-        var map = new TileMap(player);
+        GameScene.getCurrentScene().player = player;
+        var map = new TileMap(GameScene.getCurrentScene().player);
         main.addChild(map);
-        main.addChild(player);
-        player.idle();
+        main.addChild(GameScene.getCurrentScene().player);
+        GameScene.getCurrentScene().player.idle();
         main.addChild(mainPanel);
         main.addChild(NPC_1);
         main.addChild(NPC_2);
-        main.addChild(Dpanel_1);
-        main.addChild(Dpanel_2);
+        main.addChild(this.dp1);
+        main.addChild(this.dp2);
     };
     return PickHeroScene;
 }());

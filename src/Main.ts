@@ -131,140 +131,142 @@ class Main extends egret.DisplayObjectContainer {
         BlackMask.height = stageH;
         this.addChild(BlackMask);
 
-         var pickHeroScene = new PickHeroScene();
-         pickHeroScene.hero = SetTriangle();
-         var battle = new Battle(pickHeroScene.hero,1,6,6);
-         this.addChild(battle);
+        var scene = new GameScene();
+        GameScene.replaceScene(scene);
+         var pickscene = new PickHeroScene();
+        PickHeroScene.replaceScene(pickscene);
+        //  PickHeroScene.hero = SetTriangle();
+        //  var battle = new Battle(PickHeroScene.hero,1,6,6);
+        //  this.addChild(battle);
 
-        // var WhiteMask = new egret.Shape();
-        // WhiteMask.graphics.beginFill(0xFFFFFF, 1);
-        // WhiteMask.graphics.drawRect(0, 0, stageW, stageH);
-        // WhiteMask.graphics.endFill();
-        // WhiteMask.width = stageW;
-        // WhiteMask.height = stageH;
-        // //this.addChild(WhiteMask);
-        // //WhiteMask.alpha = 0;
+        var WhiteMask = new egret.Shape();
+        WhiteMask.graphics.beginFill(0xFFFFFF, 1);
+        WhiteMask.graphics.drawRect(0, 0, stageW, stageH);
+        WhiteMask.graphics.endFill();
+        WhiteMask.width = stageW;
+        WhiteMask.height = stageH;
+        //this.addChild(WhiteMask);
+        //WhiteMask.alpha = 0;
 
-        // var back: egret.Bitmap = this.createBitmapByName("menu_jpg");
-        // this.addChild(back);
-        // var stageW: number = this.stage.stageWidth;
-        // var stageH: number = this.stage.stageHeight;
-        // back.width = stageW;
-        // back.height = stageH;
-        // back.y = -150;
-        // var count = 0;
-        // egret.Ticker.getInstance().register(() => {
-        //     if (count < 5) {
-        //         back.scaleY *= 1.005;
-        //     }
-        //     else if (count < 10 || count >= 5) {
-        //         back.scaleY /= 1.005;
-        //     }
-        //     count += 0.5;
-        //     if (count >= 10) {
-        //         count = 0;
-        //     }
+        var back: egret.Bitmap = this.createBitmapByName("menu_jpg");
+        this.addChild(back);
+        var stageW: number = this.stage.stageWidth;
+        var stageH: number = this.stage.stageHeight;
+        back.width = stageW;
+        back.height = stageH;
+        back.y = -150;
+        var count = 0;
+        egret.Ticker.getInstance().register(() => {
+            if (count < 5) {
+                back.scaleY *= 1.005;
+            }
+            else if (count < 10 || count >= 5) {
+                back.scaleY /= 1.005;
+            }
+            count += 0.5;
+            if (count >= 10) {
+                count = 0;
+            }
 
-        // }, this);
-
-
-
-        // // var icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
-        // // this.addChild(icon);
-        // // icon.x = 26;
-        // // icon.y = 33;
-
-        // // var line = new egret.Shape();
-        // // line.graphics.lineStyle(2,0xffffff);
-        // // line.graphics.moveTo(0,0);
-        // // line.graphics.lineTo(0,117);
-        // // line.graphics.endFill();
-        // // line.x = 172;
-        // // line.y = 61;
-        // // this.addChild(line);
+        }, this);
 
 
-        // var Title = new egret.TextField();
-        // Title.textColor = 0xffffff;
-        // Title.width = stageW - 172;
-        // Title.textAlign = "center";
-        // Title.text = "二维位面之纯形争霸";
-        // Title.size = 50;
-        // Title.fontFamily = '黑体';
-        // Title.x = 100;
-        // Title.y = 100;
-        // this.addChild(Title);
 
-        // var start = new egret.TextField();
-        // start.textColor = 0xffffff;
-        // start.width = stageW - 172;
-        // start.textAlign = "center";
-        // start.text = "开始游戏";
-        // start.size = 40;
-        // start.fontFamily = '黑体';
-        // start.x = 90;
-        // start.y = 800;
-        // this.addChild(start);
+        // var icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
+        // this.addChild(icon);
+        // icon.x = 26;
+        // icon.y = 33;
 
-        // var material = new egret.TextField();
-        // material.textColor = 0xffffff;
-        // material.width = stageW - 172;
-        // material.textAlign = "center";
-        // material.text = "背景资料";
-        // material.size = 40;
-        // material.fontFamily = '黑体';
-        // material.x = 90;
-        // material.y = 850;
-        // this.addChild(material);
+        // var line = new egret.Shape();
+        // line.graphics.lineStyle(2,0xffffff);
+        // line.graphics.moveTo(0,0);
+        // line.graphics.lineTo(0,117);
+        // line.graphics.endFill();
+        // line.x = 172;
+        // line.y = 61;
+        // this.addChild(line);
 
-        // var about = new egret.TextField();
-        // about.textColor = 0xffffff;
-        // about.width = stageW - 172;
-        // about.textAlign = "center";
-        // about.text = "游戏理念";
-        // about.size = 40;
-        // about.fontFamily = '黑体';
-        // about.x = 90;
-        // about.y = 900;
-        // this.addChild(about);
+
+        var Title = new egret.TextField();
+        Title.textColor = 0xffffff;
+        Title.width = stageW - 172;
+        Title.textAlign = "center";
+        Title.text = "二维位面之纯形争霸";
+        Title.size = 50;
+        Title.fontFamily = '黑体';
+        Title.x = 100;
+        Title.y = 100;
+        this.addChild(Title);
+
+        var start = new egret.TextField();
+        start.textColor = 0xffffff;
+        start.width = stageW - 172;
+        start.textAlign = "center";
+        start.text = "开始游戏";
+        start.size = 40;
+        start.fontFamily = '黑体';
+        start.x = 90;
+        start.y = 800;
+        this.addChild(start);
+
+        var material = new egret.TextField();
+        material.textColor = 0xffffff;
+        material.width = stageW - 172;
+        material.textAlign = "center";
+        material.text = "背景资料";
+        material.size = 40;
+        material.fontFamily = '黑体';
+        material.x = 90;
+        material.y = 850;
+        this.addChild(material);
+
+        var about = new egret.TextField();
+        about.textColor = 0xffffff;
+        about.width = stageW - 172;
+        about.textAlign = "center";
+        about.text = "游戏理念";
+        about.size = 40;
+        about.fontFamily = '黑体';
+        about.x = 90;
+        about.y = 900;
+        this.addChild(about);
 
    
        
        
 
-        // start.touchEnabled = true;
-        // start.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
-        //     this.removeChild(start);
-        //     this.removeChild(material);
-        //     this.removeChild(about);
-        //     this.removeChild(Title);
-        //     this.removeChild(back);
-        //     //BlackMask.alpha = 0;
-        //     //WhiteMask.alpha = 1;
-        //     pickHeroScene.showPick(stageW, this);
+        start.touchEnabled = true;
+        start.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+            this.removeChild(start);
+            this.removeChild(material);
+            this.removeChild(about);
+            this.removeChild(Title);
+            this.removeChild(back);
+            //BlackMask.alpha = 0;
+            //WhiteMask.alpha = 1;
+            PickHeroScene.getCurrentScene().showPick(stageW, this);
 
             
-        //     switch (pickHeroScene.ad) {
+            switch (PickHeroScene.getCurrentScene().ad) {
 
-        //         case "sanjiao_png":
-        //             pickHeroScene.hero = SetTriangle();
-        //             break;
-        //         case "fangkuai_png":
-        //             pickHeroScene.hero = SetSquare();
-        //             break;
+                case "sanjiao_png":
+                    PickHeroScene.getCurrentScene().hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    PickHeroScene.getCurrentScene().hero = SetSquare();
+                    break;
 
-        //         case "zhengyuan_png":
-        //             pickHeroScene.hero = SetCircle();
-        //             break;
+                case "zhengyuan_png":
+                    PickHeroScene.getCurrentScene().hero = SetCircle();
+                    break;
 
-        //     }
+            }
 
             
-        // }, this);
+        }, this);
 
         
-        // var battle = new Battle(pickHeroScene.hero,1,6,6);
-        // this.addChild(battle);
+       
   
            
              

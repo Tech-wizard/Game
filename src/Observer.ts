@@ -70,8 +70,12 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     }
 
     onNPCClick() {
-
-        this.dialoguePanel.showDpanel();
+        
+        var list = new CommandList();
+        list.addCommand(new WalkCommand(Math.floor(this.x/TileMap.TILE_SIZE), Math.floor(this.y/TileMap.TILE_SIZE)));
+        list.addCommand(new TalkCommand(this.id));
+        list.execute();
+        //this.dialoguePanel.showDpanel();
         //TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
 
     }
@@ -184,7 +188,7 @@ class DialoguePanel extends egret.DisplayObjectContainer {
     public updateViewByTask(task: Task) {
         this.currentTask = task;
         if (task.id == "000" && this.linkNPC.id == "NPC_2") {
-            this.textField.text = "请祝我一臂之力，帮我杀怪";
+            this.textField.text = "变得不规则挺好的，哈哈哈，来跳舞吧！";
         }
         else {
             this.textField.text = this.currentTask.NPCTaskTalk;

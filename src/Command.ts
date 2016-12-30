@@ -57,16 +57,33 @@ class FightCommand implements Command {
 
 class TalkCommand implements Command {
 
+  npcid:string;
+  constructor(npcad:string){
+  this.npcid = npcad;
+  }
 
     execute(callback: Function): void {
-        console.log("打开对话框")
+         
+        if(this.npcid=="NPC_1"){
+        PickHeroScene.getCurrentScene().dp1.showDpanel();
+        }
+         if(this.npcid=="NPC_2"){
+        PickHeroScene.getCurrentScene().dp2.showDpanel();
+        }
+        console.log("打开对话框");
         egret.setTimeout(function () {
-            console.log("结束对话")
+            console.log("结束对话");
             callback();
         }, this, 500)
     }
 
     cancel(callback: Function) {
+       if(this.npcid=="NPC_1"){
+        PickHeroScene.getCurrentScene().dp1.disshowDpanel();
+        }
+         if(this.npcid=="NPC_2"){
+        PickHeroScene.getCurrentScene().dp2.disshowDpanel();
+        }
         console.log("关闭对话框");
     }
 }
@@ -110,7 +127,7 @@ class CommandList {
         if (command) {
             console.log("执行下一命令", command)
             command.execute(() => {
-                this.execute()
+                this.execute();
             })
 
         }

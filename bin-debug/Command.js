@@ -46,10 +46,18 @@ var FightCommand = (function () {
 }());
 egret.registerClass(FightCommand,'FightCommand',["Command"]);
 var TalkCommand = (function () {
-    function TalkCommand() {
+    function TalkCommand(npcad) {
+        this.npcid = npcad;
     }
     var d = __define,c=TalkCommand,p=c.prototype;
     p.execute = function (callback) {
+        if (this.npcid == "NPC_1") {
+            // console.log( PickHeroScene.getCurrentScene().dp1);
+            PickHeroScene.getCurrentScene().dp1.showDpanel();
+        }
+        if (this.npcid == "NPC_2") {
+            PickHeroScene.getCurrentScene().dp2.showDpanel();
+        }
         console.log("打开对话框");
         egret.setTimeout(function () {
             console.log("结束对话");
@@ -57,6 +65,12 @@ var TalkCommand = (function () {
         }, this, 500);
     };
     p.cancel = function (callback) {
+        if (this.npcid == "NPC_1") {
+            PickHeroScene.getCurrentScene().dp1.disshowDpanel();
+        }
+        if (this.npcid == "NPC_2") {
+            PickHeroScene.getCurrentScene().dp2.disshowDpanel();
+        }
         console.log("关闭对话框");
     };
     return TalkCommand;
