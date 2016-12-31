@@ -20,6 +20,9 @@ class Battle extends egret.DisplayObjectContainer {
     _numCols: number;
     _numRows: number;
 
+
+    chance: number = 0;  //该回合行动次数
+
     constructor(hero: Hero, level: number, enemyad: string, x: number, y: number) {
 
         super();
@@ -36,6 +39,7 @@ class Battle extends egret.DisplayObjectContainer {
         this.enemy = setEnemy(level, enemyad);
         this._enemybody.texture = RES.getRes(this.enemy.bodyad);
         this.battleinfo.text = "战斗信息";
+        this.battleinfo.size = 20;
         this.addChild(this.battleinfo);
         this.battleinfo.x = 100;
         this.battleinfo.y = 700;
@@ -91,13 +95,34 @@ class Battle extends egret.DisplayObjectContainer {
 
 
     heroturn() {
+        this.chance = 2;
         this.heroSkills[0].touchEnabled = true;
         this.heroSkills[1].touchEnabled = true;
         this.heroSkills[2].touchEnabled = true;
         this.heroSkills[3].touchEnabled = true;
         this.heroSkills[4].touchEnabled = true;
+        //egret.setInterval(()=>{this.randommove(this.heropos)},this,2000);
+        //egret.setInterval(() => { this.enemyturn() }, this, 3000);
 
-        this.heroSkills[4].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heromove, this)
+        this.heroSkills[0].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.heroattack(this.hero.skills[0])}, this);
+        this.heroSkills[1].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.heroattack(this.hero.skills[1])}, this);
+        this.heroSkills[2].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.herospecial(this.hero.skills[2])}, this);
+        this.heroSkills[3].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.herobuff(this.hero.skills[3])}, this);
+        this.heroSkills[4].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heromove, this);
+        this.heroturnend();
+    }
+
+    heroturnend(){
+        egret.setInterval(()=>{if(this.chance = 0){
+        this.heroSkills[0].touchEnabled = false;
+        this.heroSkills[1].touchEnabled = false;
+        this.heroSkills[2].touchEnabled = false;
+        this.heroSkills[3].touchEnabled = false;
+        this.heroSkills[4].touchEnabled = false;
+        }
+        this.enemyturn();},this,1000);
+       
+
     }
 
     upDateBattelMap() {
@@ -133,7 +158,7 @@ class Battle extends egret.DisplayObjectContainer {
             this.heroSkills[i].y = this.hero.skills[i].y;
             this.addChild(this.heroSkills[i]);
 
-            this.heroSkillsinfo[i].text = this.hero.skills[i].name + "\n" + this.hero.skills[i].inf;
+            this.heroSkillsinfo[i].text = this.hero.skills[i].name + "\n" + this.hero.skills[i].inf+"\nMP消耗："+this.hero.skills[i].MPneed;
             this.heroSkillsinfo[i].size = 18;
             this.heroSkillsinfo[i].x = this.hero.skills[i].x - 28;
             this.heroSkillsinfo[i].y = this.hero.skills[i].y + 20;
@@ -264,7 +289,7 @@ class Battle extends egret.DisplayObjectContainer {
 
     heroleftmove() {
 
-         for (var i = 0; i < this._numCols; i++) {
+        for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
                 this._block[i][j].touchEnabled = false;
             }
@@ -306,7 +331,7 @@ class Battle extends egret.DisplayObjectContainer {
 
     herodownmove() {
 
-         for (var i = 0; i < this._numCols; i++) {
+        for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
                 this._block[i][j].touchEnabled = false;
             }
@@ -330,8 +355,10 @@ class Battle extends egret.DisplayObjectContainer {
             this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = true;
             this._block[this.heropos.x + 1][this.heropos.y].texture = RES.getRes("right_png");
 
-            if (this._block[this.heropos.x + 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+            if (this._block[this.heropos.x + 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
+
                 this._block[this.heropos.x + 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
+                //removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
             }
 
             this._block[this.heropos.x + 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
@@ -341,7 +368,7 @@ class Battle extends egret.DisplayObjectContainer {
             this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = true;
             this._block[this.heropos.x - 1][this.heropos.y].texture = RES.getRes("left_png");
 
-            if (this._block[this.heropos.x - 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+            if (this._block[this.heropos.x - 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
                 this._block[this.heropos.x - 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
             }
 
@@ -352,7 +379,7 @@ class Battle extends egret.DisplayObjectContainer {
             this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = true;
             this._block[this.heropos.x][this.heropos.y + 1].texture = RES.getRes("down_png");
 
-            if (this._block[this.heropos.x][this.heropos.y + 1].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+            if (this._block[this.heropos.x][this.heropos.y + 1].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
                 this._block[this.heropos.x][this.heropos.y + 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
             }
 
@@ -364,7 +391,7 @@ class Battle extends egret.DisplayObjectContainer {
             this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = true;
             this._block[this.heropos.x][this.heropos.y - 1].texture = RES.getRes("up_png");
 
-            if (this._block[this.heropos.x][this.heropos.y - 1].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+            if (this._block[this.heropos.x][this.heropos.y - 1].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
                 this._block[this.heropos.x][this.heropos.y - 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
             }
 
@@ -402,8 +429,114 @@ class Battle extends egret.DisplayObjectContainer {
     }
 
 
-    enemyturn() {
+    randommove(pos: Pos) {
+        switch (Math.floor(Math.random() * 100) % 4) {
+            case 0:
+                if (pos.x + 1 < this._numCols) {
+                    pos.x++;
+                }
+                else {
+                    pos.x--;
+                }
+                break;
 
+            case 1:
+                if (pos.y + 1 < this._numCols) {
+                    pos.y++;
+                }
+                else {
+                    pos.y--;
+                }
+                break;
+
+            case 2:
+                if (pos.x - 1 >= 0) {
+                    pos.x--;
+                }
+                else {
+                    pos.x++;
+                }
+                break;
+
+            case 3:
+                if (pos.y - 1 >= 0) {
+                    pos.y--;
+                }
+                else {
+                    pos.y++;
+                }
+                break;
+        }
+        this.upDateBattelMap();
+    }
+
+
+    heroattack(skill: SkillData) {
+        
+        var temp = 0;
+        if (this.judgeDistance(skill) == true && this.hero.curMP.value >= skill.MPneed) {
+            temp = skill.ratio * this.hero._ATK.value / 100 - Math.floor(Math.random() * 5);
+            this.hero.curMP.value -= skill.MPneed;
+            this.enemy.curHP.value -= temp;
+            this.battleinfo.text = this.hero.name + skill.name + "对" + this.enemy.name + "造成" + temp + "点伤害";
+            this.chance--;
+        }
+        else {
+            this.battleinfo.text = "MP不足或者技能释放范围不够";
+        }
+        this.updateALLState();
+    }
+
+    herobuff(skill:SkillData) {
+
+        if ( this.hero.curMP.value >= skill.MPneed) {
+        this.chance--;
+        this.hero.curMP.value -= skill.MPneed;
+        switch (skill.type) {
+
+            case SkillType.speedbuff:
+                this.chance+=2;
+                break;
+
+            case SkillType.atkbuff:
+                this.hero._ATK.value = skill.ratio / 100 * this.hero._ATK.value;
+                break;
+
+            case SkillType.HPbuff:
+                this.hero.curHP.value = skill.ratio / 100 * this.hero.curHP.value;
+        }
+        }
+        else {
+            this.battleinfo.text = "MP不足";
+        }
+    }
+
+    herospecial(skill: SkillData){
+     switch (skill.type) {
+         case SkillType.roll:
+         break;
+         case SkillType.jump:
+         break;
+     }
+    }
+
+    enemyattack() {
+        var skill = this.enemy.skills[0];
+        var temp = 0;
+        if (this.judgeDistance(skill) == true) {
+            temp = skill.ratio * this.enemy._ATK.value / 100 - Math.floor(Math.random() * 5);
+            this.hero.curHP.value -= temp;
+            this.enemy.curMP.value -= skill.MPneed;
+            this.battleinfo.text = this.enemy.name + skill.name + "对" + this.hero.name + "造成" + temp + "点伤害";
+        }
+        this.updateALLState();
+    }
+
+    enemyturn() {
+        this.randommove(this.enemypos);
+        egret.setTimeout(() => {
+            this.enemyattack();
+        }, this, 1500);
     }
 }
 
