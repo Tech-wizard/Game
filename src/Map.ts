@@ -41,55 +41,58 @@ class TileMap extends egret.DisplayObjectContainer {
             var localX = e.localX;
             var localY = e.localY;
 
-            var playerX = Math.floor(this._player._body.x / TileMap.TILE_SIZE);
-            var playerY = Math.floor(this._player._body.y / TileMap.TILE_SIZE);
+            // var playerX = Math.floor(this._player._body.x / TileMap.TILE_SIZE);
+            // var playerY = Math.floor(this._player._body.y / TileMap.TILE_SIZE);
 
-            // var playerX: number = 0;
-            // var playerY: number = 0;
+            // // var playerX: number = 0;
+            // // var playerY: number = 0;
             var gridX = Math.floor(localX / TileMap.TILE_SIZE);
             var gridY = Math.floor(localY / TileMap.TILE_SIZE);
-            this._astar = new AStar();
-            var grid = new Grid(12, 16, config);
-            grid.setStartNode(playerX, playerY);
-            grid.setEndNode(gridX, gridY);
-            //console.log(grid._nodes);
-            if (this._astar.findPath(grid)) {
-                this._astar._path.map((tile) => {
-                    console.log(`x:${tile.x},y:${tile.y}`)
-                });
+            // this._astar = new AStar();
+            // var grid = new Grid(12, 16, config);
+            // grid.setStartNode(playerX, playerY);
+            // grid.setEndNode(gridX, gridY);
+            // //console.log(grid._nodes);
+            // if (this._astar.findPath(grid)) {
+            //     this._astar._path.map((tile) => {
+            //         console.log(`x:${tile.x},y:${tile.y}`)
+            //     });
 
 
-                var path = this._astar._path;
-                var current = path.shift();
+            //     var path = this._astar._path;
+            //     var current = path.shift();
 
-                let ticker = () => {
-                    playerX = Math.floor(this._player._body.x / TileMap.TILE_SIZE);
-                    playerY = Math.floor(this._player._body.y / TileMap.TILE_SIZE);
-                    this._player._body.x += this._speed * (current.x - playerX);
-                    this._player._body.y += this._speed * (current.y - playerY);
-                    if (playerX == current.x && playerY == current.y ) {
-                        this._player._body.x = current.x * TileMap.TILE_SIZE;
-                        this._player._body.y = current.y * TileMap.TILE_SIZE;
+            //     let ticker = () => {
+            //         playerX = Math.floor(this._player._body.x / TileMap.TILE_SIZE);
+            //         playerY = Math.floor(this._player._body.y / TileMap.TILE_SIZE);
+            //         this._player._body.x += this._speed * (current.x - playerX);
+            //         this._player._body.y += this._speed * (current.y - playerY);
+            //         if (playerX == current.x && playerY == current.y) {
+            //             this._player._body.x = current.x * TileMap.TILE_SIZE;
+            //             this._player._body.y = current.y * TileMap.TILE_SIZE;
 
-                        if (this._astar._path.length == 0) {
-                            egret.Ticker.getInstance().unregister(ticker, this);
-                        }
-                        else {
-                            current = path.shift();
-                        }
-                    }
+            //             if (this._astar._path.length == 0) {
+            //                 egret.Ticker.getInstance().unregister(ticker, this);
+            //             }
+            //             else {
+            //                 current = path.shift();
+            //             }
+            //         }
+            //     }
+
+
+            //     egret.Ticker.getInstance().register(ticker, this);
+                 if (SceneService.getInstance().list.length!=0) {
+                SceneService.getInstance().list.cancel();
                 }
+                SceneService.getInstance().list.addCommand(new WalkCommand(gridX,gridY));
+                SceneService.getInstance().list.execute();
 
-
-                egret.Ticker.getInstance().register(ticker, this);
-
-
-
-// &&
-//                      this._player._body.x <= current.x * TileMap.TILE_SIZE + this._speed &&
-//                       this._player._body.x >= current.x * TileMap.TILE_SIZE - this._speed &&
-//                       this._player._body.y <= current.y * TileMap.TILE_SIZE + this._speed &&
-//                       this._player._body.y >= current.y * TileMap.TILE_SIZE - this._speed)
+                // &&
+                //                      this._player._body.x <= current.x * TileMap.TILE_SIZE + this._speed &&
+                //                       this._player._body.x >= current.x * TileMap.TILE_SIZE - this._speed &&
+                //                       this._player._body.y <= current.y * TileMap.TILE_SIZE + this._speed &&
+                //                       this._player._body.y >= current.y * TileMap.TILE_SIZE - this._speed)
 
 
                 // this._i = 1;
@@ -104,7 +107,7 @@ class TileMap extends egret.DisplayObjectContainer {
                 // timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.timerComFunc, this);
                 // //开始计时
                 // timer.start();
-            }
+            //}
         }, this);
 
 

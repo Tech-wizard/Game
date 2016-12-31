@@ -1,6 +1,6 @@
 var Battle = (function (_super) {
     __extends(Battle, _super);
-    function Battle(hero, level, x, y) {
+    function Battle(hero, level, enemyad, x, y) {
         _super.call(this);
         this.heropos = new Pos(0, 5);
         this.enemypos = new Pos(5, 0);
@@ -14,14 +14,21 @@ var Battle = (function (_super) {
         this._enemybody = new egret.Bitmap();
         this._enemyHP = new egret.TextField();
         this._enemyMP = new egret.TextField();
+        var BattleMask = new egret.Shape();
+        BattleMask.graphics.beginFill(0x000000, 1);
+        BattleMask.graphics.drawRect(0, 0, 640, 1136);
+        BattleMask.graphics.endFill();
+        BattleMask.width = 640;
+        BattleMask.height = 1136;
+        this.addChild(BattleMask);
         this.hero = hero;
-        this.enemy = setEnemy(level, "enemy_1_png");
+        this.enemy = setEnemy(level, enemyad);
         this._enemybody.texture = RES.getRes(this.enemy.bodyad);
         this.battleinfo.text = "战斗信息";
         this.addChild(this.battleinfo);
         this.battleinfo.x = 100;
         this.battleinfo.y = 700;
-        switch (this.hero.name) {
+        switch (hero.name) {
             case "三角":
                 this._herobody.texture = RES.getRes("sanjiao_png");
                 this._herobodyad = "sanjiao_png";
@@ -58,16 +65,32 @@ var Battle = (function (_super) {
         this.upDateBattelMap();
         this.showSkills();
         this.showALLState();
+        console.log(this.hero);
+        this.updateALLState();
+        this.heroturn();
     }
     var d = __define,c=Battle,p=c.prototype;
+    p.heroturn = function () {
+        this.heroSkills[0].touchEnabled = true;
+        this.heroSkills[1].touchEnabled = true;
+        this.heroSkills[2].touchEnabled = true;
+        this.heroSkills[3].touchEnabled = true;
+        this.heroSkills[4].touchEnabled = true;
+        this.heroSkills[4].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heromove, this);
+    };
     p.upDateBattelMap = function () {
         for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
-                if (i == this.heropos.x && j == this.heropos.y) {
-                    this._block[i][j].texture = RES.getRes(this._herobodyad);
-                }
+                this._block[i][j].texture = RES.getRes("block2_png");
+            }
+        }
+        for (var i = 0; i < this._numCols; i++) {
+            for (var j = 0; j < this._numRows; j++) {
                 if (i == this.enemypos.x && j == this.enemypos.y) {
                     this._block[i][j].texture = RES.getRes(this.enemy.bodyad);
+                }
+                if (i == this.heropos.x && j == this.heropos.y) {
+                    this._block[i][j].texture = RES.getRes(this._herobodyad);
                 }
             }
         }
@@ -94,7 +117,7 @@ var Battle = (function (_super) {
         this._heroMP.text = "MP:";
         for (var i = 0; i < 25; i++) {
             this._heroHP.text += "|";
-            this._heroMP.text += "|";
+            this._heroMP.text += "-";
         }
         this._heroHP.x = 200;
         this._heroHP.y = 800;
@@ -111,7 +134,7 @@ var Battle = (function (_super) {
         this._enemyMP.text = "MP:";
         for (var i = 0; i < 25; i++) {
             this._enemyHP.text += "|";
-            this._enemyMP.text += "|";
+            this._enemyMP.text += "-";
         }
         this._enemyHP.x = 200;
         this._enemyHP.y = 80;
@@ -137,7 +160,7 @@ var Battle = (function (_super) {
         }
         for (var j = 0; j < 25; j++) {
             if (j < mptemp) {
-                this._heroMP.text += "|";
+                this._heroMP.text += "-";
             }
             else {
                 this._heroMP.text += ".";
@@ -157,11 +180,132 @@ var Battle = (function (_super) {
         }
         for (j = 0; j < 25; j++) {
             if (j < mptemp) {
-                this._enemyMP.text += "*";
+                this._enemyMP.text += "-";
             }
             else {
                 this._enemyMP.text += ".";
             }
+        }
+    };
+    p.herorightmove = function () {
+        // if (this.heropos.x + 1 < this._numCols) {
+        //     this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = false;
+        // }
+        // if (this.heropos.x - 1 >= 0) {
+        //     this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = false;
+        // }
+        // if (this.heropos.y + 1 < this._numRows) {
+        //     this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = false;
+        // }
+        // if (this.heropos.y - 1 >= 0) {
+        //     this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = false;
+        // }
+        for (var i = 0; i < this._numCols; i++) {
+            for (var j = 0; j < this._numRows; j++) {
+                this._block[i][j].touchEnabled = false;
+            }
+        }
+        this.heropos.x++;
+        this.upDateBattelMap();
+        if (this.hero.name == "三角") {
+            this.hero.curMP.value += 10;
+            if (this.hero.curMP.value > 100) {
+                this.hero.curMP.value = 100;
+            }
+            this.updateALLState();
+        }
+    };
+    p.heroleftmove = function () {
+        for (var i = 0; i < this._numCols; i++) {
+            for (var j = 0; j < this._numRows; j++) {
+                this._block[i][j].touchEnabled = false;
+            }
+        }
+        this.heropos.x--;
+        this.upDateBattelMap();
+        if (this.hero.name == "三角") {
+            this.hero.curMP.value += 10;
+            if (this.hero.curMP.value > 100) {
+                this.hero.curMP.value = 100;
+            }
+            this.updateALLState();
+        }
+    };
+    p.heroupmove = function () {
+        for (var i = 0; i < this._numCols; i++) {
+            for (var j = 0; j < this._numRows; j++) {
+                this._block[i][j].touchEnabled = false;
+            }
+        }
+        this.heropos.y--;
+        this.upDateBattelMap();
+        if (this.hero.name == "三角") {
+            this.hero.curMP.value += 10;
+            if (this.hero.curMP.value > 100) {
+                this.hero.curMP.value = 100;
+            }
+            this.updateALLState();
+        }
+    };
+    p.herodownmove = function () {
+        for (var i = 0; i < this._numCols; i++) {
+            for (var j = 0; j < this._numRows; j++) {
+                this._block[i][j].touchEnabled = false;
+            }
+        }
+        this.heropos.y++;
+        this.upDateBattelMap();
+        if (this.hero.name == "三角") {
+            this.hero.curMP.value += 10;
+            if (this.hero.curMP.value > 100) {
+                this.hero.curMP.value = 100;
+            }
+            this.updateALLState();
+        }
+    };
+    p.heromove = function () {
+        if (this.heropos.x + 1 < this._numCols) {
+            this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = true;
+            this._block[this.heropos.x + 1][this.heropos.y].texture = RES.getRes("right_png");
+            if (this._block[this.heropos.x + 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+                this._block[this.heropos.x + 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
+            }
+            this._block[this.heropos.x + 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
+        }
+        if (this.heropos.x - 1 >= 0) {
+            this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = true;
+            this._block[this.heropos.x - 1][this.heropos.y].texture = RES.getRes("left_png");
+            if (this._block[this.heropos.x - 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+                this._block[this.heropos.x - 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
+            }
+            this._block[this.heropos.x - 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
+        }
+        if (this.heropos.y + 1 < this._numRows) {
+            this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = true;
+            this._block[this.heropos.x][this.heropos.y + 1].texture = RES.getRes("down_png");
+            if (this._block[this.heropos.x][this.heropos.y + 1].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+                this._block[this.heropos.x][this.heropos.y + 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
+            }
+            this._block[this.heropos.x][this.heropos.y + 1].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
+        }
+        if (this.heropos.y - 1 >= 0) {
+            this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = true;
+            this._block[this.heropos.x][this.heropos.y - 1].texture = RES.getRes("up_png");
+            if (this._block[this.heropos.x][this.heropos.y - 1].hasEventListener(egret.TouchEvent.TOUCH_TAP)) {
+                this._block[this.heropos.x][this.heropos.y - 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
+            }
+            this._block[this.heropos.x][this.heropos.y - 1].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
+        }
+        console.log(this.heropos);
+    };
+    p.judgeDistance = function (skill) {
+        if (Math.abs(this.heropos.x - this.enemypos.x) +
+            Math.abs(this.heropos.y - this.enemypos.y)
+            <= skill.distance) {
+            return true;
+        }
+        else {
+            return false;
         }
     };
     p.judgeHeroDeath = function () {
@@ -176,6 +320,8 @@ var Battle = (function (_super) {
         else
             return false;
     };
+    p.enemyturn = function () {
+    };
     return Battle;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Battle,'Battle');
@@ -188,26 +334,6 @@ var Pos = (function () {
     return Pos;
 }());
 egret.registerClass(Pos,'Pos');
-// class BattleMap extends egret.DisplayObjectContainer {
-//     _block: egret.Bitmap[][] = [];
-//     _herobody:egret.Bitmap;
-//     _enemybody:egret.Bitmap;
-//     _numCols: number;
-//     _numRows: number;
-//     constructor(x: number, y: number) {
-//         super();
-//         this._numCols = x;
-//         this._numRows = y;
-//         for (var i = 0; i < this._numCols; i++) {
-//             this._block[i] = new Array();
-//             for (var j = 0; j < this._numRows; j++) {
-//                 this._block[i][j] = new egret.Bitmap();
-//                 this._block[i][j].texture = RES.getRes("block_png");
-//                 this.addChild(this._block[i][j]);
-//             }
-//         }
-//     }
-// }
 var Enemy = (function (_super) {
     __extends(Enemy, _super);
     function Enemy(name, ad, str, con, dex, mag, spd, quality) {

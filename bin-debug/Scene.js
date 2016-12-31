@@ -1,6 +1,7 @@
 var SceneService = (function () {
     function SceneService() {
         this.observerList = [];
+        this.list = new CommandList();
         SceneService.count++;
         if (SceneService.count > 1) {
             throw "singleton!!!";
@@ -71,10 +72,9 @@ var GameScene = (function () {
                     if (astar._path.length == 0) {
                         console.log("寻路完毕");
                         egret.Ticker.getInstance().unregister(ticker_1, _this);
-                        egret.setTimeout(function () {
-                            console.log("结束移动");
-                            callback();
-                        }, _this, 500);
+                        // egret.setTimeout(function () {
+                        console.log("结束移动");
+                        callback();
                     }
                     else {
                         current = path.shift();
@@ -127,6 +127,18 @@ var PickHeroScene = (function () {
         sanjiao.touchEnabled = true;
         sanjiao.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
             _this.ad = "sanjiao_png";
+            switch (_this.ad) {
+                case "sanjiao_png":
+                    console.log("sanjiao");
+                    _this.hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    _this.hero = SetSquare();
+                    break;
+                case "zhengyuan_png":
+                    _this.hero = SetCircle();
+                    break;
+            }
             main.removeChild(pick);
             main.removeChild(sanjiao);
             main.removeChild(fangkuai);
@@ -146,6 +158,18 @@ var PickHeroScene = (function () {
         fangkuai.touchEnabled = true;
         fangkuai.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
             _this.ad = "fangkuai_png";
+            switch (_this.ad) {
+                case "sanjiao_png":
+                    console.log("sanjiao");
+                    _this.hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    _this.hero = SetSquare();
+                    break;
+                case "zhengyuan_png":
+                    _this.hero = SetCircle();
+                    break;
+            }
             main.removeChild(pick);
             main.removeChild(sanjiao);
             main.removeChild(fangkuai);
@@ -165,6 +189,18 @@ var PickHeroScene = (function () {
         zhengyuan.touchEnabled = true;
         zhengyuan.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
             _this.ad = "zhengyuan_png";
+            switch (_this.ad) {
+                case "sanjiao_png":
+                    console.log("sanjiao");
+                    _this.hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    _this.hero = SetSquare();
+                    break;
+                case "zhengyuan_png":
+                    _this.hero = SetCircle();
+                    break;
+            }
             main.removeChild(pick);
             main.removeChild(sanjiao);
             main.removeChild(fangkuai);
@@ -188,7 +224,7 @@ var PickHeroScene = (function () {
         task_0.NPCTaskTalk = "不要管我了，我不行了";
         task_0.total = 1;
         task_0.status = TaskStatus.ACCEPTABLE;
-        var task_1 = new Task("001", "杀怪任务", new KillMonsterTaskCondition());
+        var task_1 = new Task("001", "战斗任务", new KillMonsterTaskCondition());
         task_1.fromNpcId = "NPC_2";
         task_1.toNpcId = "NPC_2";
         task_1.desc = "探寻下方的几何体";

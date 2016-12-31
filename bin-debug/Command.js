@@ -18,19 +18,32 @@ var WalkCommand = (function () {
 }());
 egret.registerClass(WalkCommand,'WalkCommand',["Command"]);
 var FightCommand = (function () {
-    function FightCommand() {
-        /**
-         * 所有的 Command 都需要有这个标记，应该如何封装处理这个问题呢？
-         */
+    function FightCommand(ad) {
         this._hasBeenCancelled = false;
+        this.enemyad = ad;
     }
     var d = __define,c=FightCommand,p=c.prototype;
     p.execute = function (callback) {
-        var _this = this;
         console.log("开始战斗");
-        egret.setTimeout(function () {
-            if (!_this._hasBeenCancelled) {
-                console.log("结束战斗");
+        console.log(PickHeroScene.getCurrentScene().hero);
+        var battle = new Battle(PickHeroScene.getCurrentScene().hero, 1, this.enemyad, 6, 6);
+        if (GameScene.getCurrentScene().main.$children.length != 0) {
+            GameScene.getCurrentScene().main.removeChildren();
+        }
+        GameScene.getCurrentScene().main.addChild(battle);
+        // egret.setTimeout(() => {
+        //  if (!this._hasBeenCancelled) {
+        //     console.log("结束战斗")
+        //     callback();
+        // }
+        //     }, this, 500)
+        egret.setInterval(function () {
+            if (battle.judgeEnemyDeath() == true) {
+                console.log("敌人死亡，结束战斗");
+                callback();
+            }
+            if (battle.judgeHeroDeath() == true) {
+                console.log("英雄阵亡，结束战斗");
                 callback();
             }
         }, this, 500);
@@ -52,7 +65,6 @@ var TalkCommand = (function () {
     var d = __define,c=TalkCommand,p=c.prototype;
     p.execute = function (callback) {
         if (this.npcid == "NPC_1") {
-            // console.log( PickHeroScene.getCurrentScene().dp1);
             PickHeroScene.getCurrentScene().dp1.showDpanel();
         }
         if (this.npcid == "NPC_2") {
@@ -62,7 +74,7 @@ var TalkCommand = (function () {
         egret.setTimeout(function () {
             console.log("结束对话");
             callback();
-        }, this, 500);
+        }, this, 2000);
     };
     p.cancel = function (callback) {
         if (this.npcid == "NPC_1") {
@@ -72,6 +84,7 @@ var TalkCommand = (function () {
             PickHeroScene.getCurrentScene().dp2.disshowDpanel();
         }
         console.log("关闭对话框");
+        callback();
     };
     return TalkCommand;
 }());
@@ -93,7 +106,7 @@ var CommandList = (function () {
             if (_this._frozen) {
                 _this._frozen = false;
             }
-        }, this, 2000);
+        }, this, 100);
         if (command) {
             command.cancel(function () {
                 _this._frozen = false;

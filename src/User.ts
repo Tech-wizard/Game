@@ -347,11 +347,11 @@ function SetSquare(): Hero {
     fangkuai.CONUP = 10;
     fangkuai.STRUP = 10;
     fangkuai.skills = [
-        { x: 30, y: 800, name: "<棱刮>", image: "Skill_1_png", inf: "普通的\n近战攻击", ratio: 100, MPneed: 0, distance: 1, type: 0, num: 2 },
-        { x: 160, y: 800, name: "<格式打击>", image: "Skill_1_png", inf: "猛扑的\n对敌人造成重创", ratio: 250, MPneed: 50, distance: 1, type: 0, num: 2 },
-        { x: 290, y: 800, name: "<空格>", image: "Skill_1_png", inf: "向所指方向\n跳跃一格\n并撞击敌人", ratio: 125, MPneed: 30, distance: 2, type: 6, num: 2 },
-        { x: 420, y: 800, name: "<栅格化>", image: "Skill_1_png", inf: "方块变得\n更方了\n本次战斗中\n永久提升攻击力", ratio: 150, MPneed: 5, distance: 2, type: 0, num: 2 },
-        { x: 550, y: 800, name: "<方块移动>", image: "Skill_1_png", inf: "上下左右\n一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 2 }
+        { x: 40, y: 1000, name: "<棱刮>", image: "Skill_1_png", inf: "普通的\n近战攻击", ratio: 100, MPneed: 0, distance: 1, type: 0, num: 2 },
+        { x: 170, y: 1000, name: "<格式打击>", image: "Skill_1_png", inf: "猛扑的\n对敌人造成重创", ratio: 250, MPneed: 50, distance: 1, type: 0, num: 2 },
+        { x: 290+6, y: 1000, name: "<空格>", image: "Skill_1_png", inf: "向所指方向\n跳跃一格\n并撞击敌人", ratio: 125, MPneed: 30, distance: 2, type: 6, num: 2 },
+        { x: 420+4, y: 1000, name: "<栅格化>", image: "Skill_1_png", inf: "方块变得\n更方了\n本次战斗中\n永久提升攻击力", ratio: 150, MPneed: 5, distance: 2, type: 0, num: 2 },
+        { x: 550+2, y: 1000, name: "<方块移动>", image: "Skill_1_png", inf: "上下左右\n一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 2 }
     ]
     return fangkuai;
 }
@@ -361,11 +361,11 @@ function SetCircle(): Hero {
     zhengyuan.CONUP = 12;
     zhengyuan.STRUP = 8;
     zhengyuan.skills = [
-        { x: 30, y: 800, name: "<碾压>", image: "Skill_1_png", inf: "普通攻击，命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
-        { x: 160, y: 800, name: "<飞盘>", image: "Skill_1_png", inf: "正圆自身的投影攻击远程攻击，命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
-        { x: 290, y: 800, name: "<翻滚>", image: "Skill_1_png", inf: "直线大幅度移动，回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
-        { x: 420, y: 800, name: "<圆滑化>", image: "Skill_1_png", inf: "正圆变得更加圆润光滑，按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
-        { x: 550, y: 800, name: "<正圆移动>", image: "Skill_1_png", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
+        { x: 40, y: 1000, name: "<碾压>", image: "Skill_1_png", inf: "普通攻击，命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
+        { x: 170, y: 1000, name: "<飞盘>", image: "Skill_1_png", inf: "正圆自身的投影攻击远程攻击，命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
+        { x: 290+6, y: 1000, name: "<翻滚>", image: "Skill_1_png", inf: "直线大幅度移动，回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
+        { x: 420+4, y: 1000, name: "<圆滑化>", image: "Skill_1_png", inf: "正圆变得更加圆润光滑，按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
+        { x: 550+2, y: 1000, name: "<正圆移动>", image: "Skill_1_png", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
     ];
     return zhengyuan;
 }

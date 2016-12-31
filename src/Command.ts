@@ -29,20 +29,45 @@ class WalkCommand implements Command {
 }
 
 class FightCommand implements Command {
-    /**
-     * 所有的 Command 都需要有这个标记，应该如何封装处理这个问题呢？
-     */
+
     private _hasBeenCancelled = false;
+    enemyad: string;
+    main: Main;
+    constructor(ad: string) {
+        this.enemyad = ad;
+
+    }
 
     execute(callback: Function): void {
+        
+        console.log("开始战斗");
+        console.log(PickHeroScene.getCurrentScene().hero);
+        var battle = new Battle(PickHeroScene.getCurrentScene().hero, 1, this.enemyad, 6, 6);
+        if(GameScene.getCurrentScene().main.$children.length!=0)
+       {GameScene.getCurrentScene().main.removeChildren();}
+        GameScene.getCurrentScene().main.addChild(battle);
 
-        console.log("开始战斗")
-        egret.setTimeout(() => {
-            if (!this._hasBeenCancelled) {
-                console.log("结束战斗")
+        // egret.setTimeout(() => {
+        //  if (!this._hasBeenCancelled) {
+        //     console.log("结束战斗")
+        //     callback();
+        // }
+        //     }, this, 500)
+        egret.setInterval(() => {
+            if (battle.judgeEnemyDeath()==true) {
+                console.log("敌人死亡，结束战斗")
+                callback();
+                
+            }
+            if (battle.judgeHeroDeath()==true) {
+                console.log("英雄阵亡，结束战斗")
                 callback();
             }
-        }, this, 500)
+
+        }, this, 500);
+
+
+
     }
 
     cancel(callback: Function) {
@@ -57,34 +82,35 @@ class FightCommand implements Command {
 
 class TalkCommand implements Command {
 
-  npcid:string;
-  constructor(npcad:string){
-  this.npcid = npcad;
-  }
+    npcid: string;
+    constructor(npcad: string) {
+        this.npcid = npcad;
+    }
 
     execute(callback: Function): void {
-         
-        if(this.npcid=="NPC_1"){
-        PickHeroScene.getCurrentScene().dp1.showDpanel();
+
+        if (this.npcid == "NPC_1") {
+            PickHeroScene.getCurrentScene().dp1.showDpanel();
         }
-         if(this.npcid=="NPC_2"){
-        PickHeroScene.getCurrentScene().dp2.showDpanel();
+        if (this.npcid == "NPC_2") {
+            PickHeroScene.getCurrentScene().dp2.showDpanel();
         }
         console.log("打开对话框");
         egret.setTimeout(function () {
             console.log("结束对话");
             callback();
-        }, this, 500)
+        }, this, 2000);
     }
 
     cancel(callback: Function) {
-       if(this.npcid=="NPC_1"){
-        PickHeroScene.getCurrentScene().dp1.disshowDpanel();
+        if (this.npcid == "NPC_1") {
+            PickHeroScene.getCurrentScene().dp1.disshowDpanel();
         }
-         if(this.npcid=="NPC_2"){
-        PickHeroScene.getCurrentScene().dp2.disshowDpanel();
+        if (this.npcid == "NPC_2") {
+            PickHeroScene.getCurrentScene().dp2.disshowDpanel();
         }
         console.log("关闭对话框");
+        callback();
     }
 }
 
@@ -106,7 +132,7 @@ class CommandList {
                 this._frozen = false;
             }
 
-        }, this, 2000);
+        }, this, 100);
         if (command) {
             command.cancel(() => {
                 this._frozen = false;

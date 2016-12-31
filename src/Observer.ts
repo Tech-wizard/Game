@@ -70,11 +70,17 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     }
 
     onNPCClick() {
-        
-        var list = new CommandList();
-        list.addCommand(new WalkCommand(Math.floor(this.x/TileMap.TILE_SIZE), Math.floor(this.y/TileMap.TILE_SIZE)));
-        list.addCommand(new TalkCommand(this.id));
-        list.execute();
+        if (SceneService.getInstance().list,length!=0) {
+            SceneService.getInstance().list.cancel();
+        }
+        SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this.x / TileMap.TILE_SIZE), Math.floor(this.y / TileMap.TILE_SIZE)));
+        SceneService.getInstance().list.addCommand(new TalkCommand(this.id));
+//&& TaskService.getInstance().taskList["001"] == TaskStatus.DURING
+        if (this.id == "NPC_2" ) {
+            SceneService.getInstance().list.addCommand(new FightCommand("npc_2_png"));
+        }
+        SceneService.getInstance().list.execute();
+
         //this.dialoguePanel.showDpanel();
         //TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
 
@@ -120,23 +126,23 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
 
     onChange(task: Task): void {
         this.textField.text = task.desc;
-        var tf:string;
-        switch(task.status){
+        var tf: string;
+        switch (task.status) {
             case 0:
-            tf = "未可接受";
-            break;
+                tf = "未可接受";
+                break;
             case 1:
-            tf = "可接受";
-            break;
+                tf = "可接受";
+                break;
             case 2:
-            tf = "进行中";
-            break;
+                tf = "进行中";
+                break;
             case 3:
-            tf = "可完成";
-            break;
+                tf = "可完成";
+                break;
             case 4:
-            tf = "已完成";
-            break;
+                tf = "已完成";
+                break;
         }
         this.textField2.text = task.name + " :" + tf;
         this.textField3.text = task.name + " :" + task.getcurrent() + "/" + task.total;
@@ -209,7 +215,16 @@ class DialoguePanel extends egret.DisplayObjectContainer {
             case TaskStatus.ACCEPTABLE:
 
                 TaskService.getInstance().accept(this.currentTask.id);
+         if(this.currentTask.id=="000"){
+             TaskService.getInstance().finish(this.currentTask.id);
+             if (TaskService.getInstance().getNextTask() != null)
+                { TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE; }
 
+                if (TaskService.getInstance().getTaskByCustomRule() != null) {
+                    this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
+                    TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
+                }
+         }
                 break;
             case TaskStatus.CAN_SUBMIT:
 
@@ -217,7 +232,6 @@ class DialoguePanel extends egret.DisplayObjectContainer {
 
                 if (TaskService.getInstance().getNextTask() != null)
                 { TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE; }
-                //this.linkNPC._emoji.alpha = 1;
 
                 if (TaskService.getInstance().getTaskByCustomRule() != null) {
                     this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());

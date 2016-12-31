@@ -3,6 +3,7 @@ class SceneService implements EventEmitter {
     private observerList: Observer[] = [];
     private static instance;
     private static count = 0;
+    public list: CommandList = new CommandList();
     constructor() {
         SceneService.count++;
         if (SceneService.count > 1) {
@@ -36,6 +37,7 @@ class SceneService implements EventEmitter {
 class GameScene {
 
     public player: Player;
+    public main: Main;
 
     private static scene: GameScene = new GameScene();
     public static replaceScene(scene: GameScene) {
@@ -85,11 +87,11 @@ class GameScene {
                         console.log("寻路完毕");
 
                         egret.Ticker.getInstance().unregister(ticker, this);
-                        egret.setTimeout(function () {
-                            console.log("结束移动")
-                            callback();
-                        }, this, 500);
-                        
+                        // egret.setTimeout(function () {
+                        console.log("结束移动")
+                        callback();
+                        //}, this, 100);
+
                     }
                     else {
                         current = path.shift();
@@ -152,6 +154,23 @@ class PickHeroScene {
         sanjiao.touchEnabled = true;
         sanjiao.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
             this.ad = "sanjiao_png";
+
+            switch (this.ad) {
+
+                case "sanjiao_png":
+                    console.log("sanjiao");
+                    this.hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    this.hero = SetSquare();
+                    break;
+
+                case "zhengyuan_png":
+                    this.hero = SetCircle();
+                    break;
+
+            }
+
             main.removeChild(pick);
             main.removeChild(sanjiao);
             main.removeChild(fangkuai);
@@ -172,11 +191,29 @@ class PickHeroScene {
         fangkuai.touchEnabled = true;
         fangkuai.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
             this.ad = "fangkuai_png";
+
+            switch (this.ad) {
+
+                case "sanjiao_png":
+                    console.log("sanjiao");
+                    this.hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    this.hero = SetSquare();
+                    break;
+
+                case "zhengyuan_png":
+                    this.hero = SetCircle();
+                    break;
+
+            }
+
             main.removeChild(pick);
             main.removeChild(sanjiao);
             main.removeChild(fangkuai);
             main.removeChild(zhengyuan);
             this.gamestart(main);
+
         }, this);
 
         var zhengyuan = new egret.TextField();
@@ -192,6 +229,23 @@ class PickHeroScene {
         zhengyuan.touchEnabled = true;
         zhengyuan.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
             this.ad = "zhengyuan_png";
+
+            switch (this.ad) {
+
+                case "sanjiao_png":
+                    console.log("sanjiao");
+                    this.hero = SetTriangle();
+                    break;
+                case "fangkuai_png":
+                    this.hero = SetSquare();
+                    break;
+
+                case "zhengyuan_png":
+                    this.hero = SetCircle();
+                    break;
+
+            }
+
             main.removeChild(pick);
             main.removeChild(sanjiao);
             main.removeChild(fangkuai);
@@ -222,7 +276,7 @@ class PickHeroScene {
         task_0.status = TaskStatus.ACCEPTABLE;
 
 
-        var task_1: Task = new Task("001", "杀怪任务", new KillMonsterTaskCondition());
+        var task_1: Task = new Task("001", "战斗任务", new KillMonsterTaskCondition());
         task_1.fromNpcId = "NPC_2";
         task_1.toNpcId = "NPC_2";
         task_1.desc = "探寻下方的几何体";
