@@ -41,10 +41,14 @@ var FightCommand = (function () {
             if (battle.judgeEnemyDeath() == true) {
                 console.log("敌人死亡，结束战斗");
                 callback();
+                GameScene.getCurrentScene().main.removeChildren();
+                PickHeroScene.getCurrentScene().gamehappyend();
             }
             if (battle.judgeHeroDeath() == true) {
                 console.log("英雄阵亡，结束战斗");
                 callback();
+                GameScene.getCurrentScene().main.removeChildren();
+                PickHeroScene.getCurrentScene().gamebadend();
             }
         }, this, 500);
     };

@@ -320,4 +320,34 @@ class PickHeroScene {
         main.addChild(this.dp2);
 
     }
+
+    public gamebadend(){
+         var no: egret.Bitmap = new egret.Bitmap();
+       no.texture = RES.getRes("End_jpg");
+       no.width = 640;
+       no.height =1134;
+        GameScene.getCurrentScene().main.addChild(no);
+    }
+
+    public gamehappyend(){
+
+         var blackback = new egret.Shape();
+        blackback.graphics.beginFill(0x000000, 1);
+        blackback.graphics.drawRect(0, 0, 640, 1134);
+        blackback.graphics.endFill();
+        blackback.width = 640;
+        blackback.height = 1134;
+       GameScene.getCurrentScene().main.addChild(blackback);
+
+        var win = new egret.TextField();
+        win.textColor = 0xffffff;
+        win.width = 640 - 172;
+        win.textAlign = "center";
+        win.text = "您已通关";
+        win.size = 80;
+        win.fontFamily = '黑体';
+        win.x = 100;
+        win.y = 100;
+        GameScene.getCurrentScene().main.addChild(win);
+    }
 }

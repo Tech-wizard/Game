@@ -211,8 +211,11 @@ class Battle extends egret.DisplayObjectContainer {
         var hptemp: number, mptemp: number;
         hptemp = Math.floor(this.hero.curHP.value / this.hero._maxHP.value * 25);
         mptemp = Math.floor(this.hero.curMP.value / this.hero._maxMP.value * 25);
-        this._heroHP.text = "";
-        this._heroMP.text = "";
+         this._heroHP.textAlign = "justify";
+           this._heroMP.textAlign = "justify";
+        // this._heroMP.textAlign = egret.HorizontalAlign.CENTER;
+        this._heroHP.text = "HP:"+this.hero.curHP.value+"/"+this.hero._maxHP.value+" ";
+        this._heroMP.text = "MP:"+this.hero.curMP.value+"/"+this.hero._maxMP.value+" ";;
         for (var i = 0; i < 25; i++) {
             if (i < hptemp) {
                 this._heroHP.text += "|";
@@ -232,8 +235,8 @@ class Battle extends egret.DisplayObjectContainer {
 
         hptemp = Math.floor(this.enemy.curHP.value / this.enemy._maxHP.value * 25);
         mptemp = Math.floor(this.enemy.curMP.value / this.enemy._maxMP.value * 25);
-        this._enemyHP.text = "";
-        this._enemyMP.text = "";
+        this._enemyHP.text = "HP:"+this.enemy.curHP.value+"/"+this.enemy._maxHP.value+" ";
+        this._enemyMP.text = "MP:"+this.enemy.curMP.value+"/"+this.enemy._maxMP.value+" ";
         for (i = 0; i < 25; i++) {
             if (i < hptemp) {
                 this._enemyHP.text += "|";
