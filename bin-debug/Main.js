@@ -101,117 +101,12 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
-        var _this = this;
-        var stageW = this.stage.stageWidth;
-        var stageH = this.stage.stageHeight;
-        console.log(stageW, stageH);
-        var BlackMask = new egret.Shape();
-        BlackMask.graphics.beginFill(0x000000, 1);
-        BlackMask.graphics.drawRect(0, 0, stageW, stageH);
-        BlackMask.graphics.endFill();
-        BlackMask.width = stageW;
-        BlackMask.height = stageH;
-        this.addChild(BlackMask);
         var scene = new GameScene();
         GameScene.replaceScene(scene);
         GameScene.getCurrentScene().main = this;
-        var pickscene = new PickHeroScene();
-        PickHeroScene.replaceScene(pickscene);
-        //   PickHeroScene.getCurrentScene().hero = SetTriangle();
-        //   var battle = new Battle(PickHeroScene.getCurrentScene().hero,1,"npc_2_png",6,6);
-        //  GameScene.getCurrentScene().main.addChild(battle);
-        var WhiteMask = new egret.Shape();
-        WhiteMask.graphics.beginFill(0xFFFFFF, 1);
-        WhiteMask.graphics.drawRect(0, 0, stageW, stageH);
-        WhiteMask.graphics.endFill();
-        WhiteMask.width = stageW;
-        WhiteMask.height = stageH;
-        // //this.addChild(WhiteMask);
-        // //WhiteMask.alpha = 0;
-        var back = new egret.Bitmap();
-        back.texture = RES.getRes("menu_jpg");
-        this.addChild(back);
-        var stageW = this.stage.stageWidth;
-        var stageH = this.stage.stageHeight;
-        back.width = stageW;
-        back.height = stageH;
-        back.y = -150;
-        var count = 0;
-        egret.Ticker.getInstance().register(function () {
-            if (count < 5) {
-                back.scaleY *= 1.003;
-            }
-            else if (count < 10 || count >= 5) {
-                back.scaleY /= 1.003;
-            }
-            count += 0.5;
-            if (count >= 10) {
-                count = 0;
-            }
-        }, this);
-        // var icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
-        // this.addChild(icon);
-        // icon.x = 26;
-        // icon.y = 33;
-        // var line = new egret.Shape();
-        // line.graphics.lineStyle(2,0xffffff);
-        // line.graphics.moveTo(0,0);
-        // line.graphics.lineTo(0,117);
-        // line.graphics.endFill();
-        // line.x = 172;
-        // line.y = 61;
-        // this.addChild(line);
-        var Title = new egret.TextField();
-        Title.textColor = 0xffffff;
-        Title.width = stageW - 172;
-        Title.textAlign = "center";
-        Title.text = "二维位面之纯形争霸";
-        Title.size = 50;
-        Title.fontFamily = '黑体';
-        Title.x = 100;
-        Title.y = 100;
-        this.addChild(Title);
-        var start = new egret.TextField();
-        start.textColor = 0xffffff;
-        start.width = stageW - 172;
-        start.textAlign = "center";
-        start.text = "开始游戏";
-        start.size = 40;
-        start.fontFamily = '黑体';
-        start.x = 90;
-        start.y = 800;
-        this.addChild(start);
-        var material = new egret.TextField();
-        material.textColor = 0xffffff;
-        material.width = stageW - 172;
-        material.textAlign = "center";
-        material.text = "背景资料";
-        material.size = 40;
-        material.fontFamily = '黑体';
-        material.x = 90;
-        material.y = 850;
-        this.addChild(material);
-        var about = new egret.TextField();
-        about.textColor = 0xffffff;
-        about.width = stageW - 172;
-        about.textAlign = "center";
-        about.text = "游戏理念";
-        about.size = 40;
-        about.fontFamily = '黑体';
-        about.x = 90;
-        about.y = 900;
-        this.addChild(about);
-        start.touchEnabled = true;
-        start.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-            _this.removeChild(start);
-            _this.removeChild(material);
-            _this.removeChild(about);
-            _this.removeChild(Title);
-            _this.removeChild(back);
-            //BlackMask.alpha = 0;
-            //WhiteMask.alpha = 1;
-            PickHeroScene.getCurrentScene().showPick(stageW, _this);
-        }, this);
+        var pickscene = new UIScene();
+        UIScene.replaceScene(pickscene);
+        UIScene.getCurrentScene().gameMenu();
     };
     p.createBitmapByName = function (name) {
         var result = new egret.Bitmap();

@@ -1,3 +1,14 @@
+enum BlockType {
+
+    notmove,
+    upmove,
+    downmove,
+    leftmove,
+    rightmove,
+
+
+}
+
 class Battle extends egret.DisplayObjectContainer {
 
     hero: Hero;
@@ -8,6 +19,7 @@ class Battle extends egret.DisplayObjectContainer {
     heroSkills: egret.Bitmap[] = [];
     heroSkillsinfo: egret.TextField[] = [];
     _block: egret.Bitmap[][] = [];
+    _blockType: number[][] = [];
     _herobody: egret.Bitmap = new egret.Bitmap();
     _heroHP: egret.TextField = new egret.TextField();
     _heroMP: egret.TextField = new egret.TextField();
@@ -42,7 +54,7 @@ class Battle extends egret.DisplayObjectContainer {
         this.battleinfo.size = 20;
         this.addChild(this.battleinfo);
         this.battleinfo.x = 100;
-        this.battleinfo.y = 700;
+        this.battleinfo.y = 740;
         switch (hero.name) {
             case "三角":
                 this._herobody.texture = RES.getRes("sanjiao_png");
@@ -66,14 +78,25 @@ class Battle extends egret.DisplayObjectContainer {
         this._numRows = y;
         for (var i = 0; i < this._numCols; i++) {
             this._block[i] = new Array();
+            this._blockType[i] = new Array();
             for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j] = new egret.Bitmap();
-                this._block[i][j].width = TileMap.TILE_SIZE;
-                this._block[i][j].height = TileMap.TILE_SIZE;
+                let block = new egret.Bitmap();
+                block['i'] = i;
+                block['j'] = j;
+                this._block[i][j] = block;
+                this._block[i][j].width = TileMap.TILE_BATTLE_SIZE;
+                this._block[i][j].height = TileMap.TILE_BATTLE_SIZE;
                 this._block[i][j].texture = RES.getRes("block2_png");
-                this._block[i][j].x = i * TileMap.TILE_SIZE + 170;
-                this._block[i][j].y = j * TileMap.TILE_SIZE + 300;
+                this._block[i][j].x = i * TileMap.TILE_BATTLE_SIZE + 80;
+                this._block[i][j].y = j * TileMap.TILE_BATTLE_SIZE + 240;
                 this.addChild(this._block[i][j]);
+                this._block[i][j].touchEnabled = true;
+                this._blockType[i][j] = BlockType.notmove;
+                this._block[i][j].addEventListener(egret.TouchEvent.TOUCH_TAP, (e: egret.TouchEvent) => {
+                    console.log(e.target);
+                    console.log(e.target.i, e.target.j);
+                    this.heroTouchMove(e.target.i, e.target.j);
+                }, this);
             }
         }
 
@@ -88,7 +111,7 @@ class Battle extends egret.DisplayObjectContainer {
         this.upDateBattelMap();
         this.showSkills();
         this.showALLState();
-        console.log(this.hero);
+        //console.log(this.hero);
         this.updateALLState();
         this.heroturn();
     }
@@ -104,24 +127,33 @@ class Battle extends egret.DisplayObjectContainer {
         //egret.setInterval(()=>{this.randommove(this.heropos)},this,2000);
         //egret.setInterval(() => { this.enemyturn() }, this, 3000);
 
-        this.heroSkills[0].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.heroattack(this.hero.skills[0])}, this);
-        this.heroSkills[1].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.heroattack(this.hero.skills[1])}, this);
-        this.heroSkills[2].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.herospecial(this.hero.skills[2])}, this);
-        this.heroSkills[3].addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{this.herobuff(this.hero.skills[3])}, this);
+        this.heroSkills[0].addEventListener(egret.TouchEvent.TOUCH_TAP, () => { this.heroattack(this.hero.skills[0]) }, this);
+        this.heroSkills[1].addEventListener(egret.TouchEvent.TOUCH_TAP, () => { this.heroattack(this.hero.skills[1]) }, this);
+        this.heroSkills[2].addEventListener(egret.TouchEvent.TOUCH_TAP, () => { this.herospecial(this.hero.skills[2]) }, this);
+        this.heroSkills[3].addEventListener(egret.TouchEvent.TOUCH_TAP, () => { this.herobuff(this.hero.skills[3]) }, this);
         this.heroSkills[4].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heromove, this);
         this.heroturnend();
     }
 
-    heroturnend(){
-        egret.setInterval(()=>{if(this.chance = 0){
-        this.heroSkills[0].touchEnabled = false;
-        this.heroSkills[1].touchEnabled = false;
-        this.heroSkills[2].touchEnabled = false;
-        this.heroSkills[3].touchEnabled = false;
-        this.heroSkills[4].touchEnabled = false;
-        }
-        this.enemyturn();},this,1000);
-       
+    heroturnend() {
+      var turn = egret.setInterval(() => {
+
+            if (this.chance = 0) {
+                this.heroSkills[0].touchEnabled = false;
+                this.heroSkills[1].touchEnabled = false;
+                this.heroSkills[2].touchEnabled = false;
+                this.heroSkills[3].touchEnabled = false;
+                this.heroSkills[4].touchEnabled = false;
+            }
+             if (this.judgeEnemyDeath() == true||this.judgeHeroDeath() == true) {
+                console.log("结束战斗");
+                egret.clearInterval(turn);
+            }
+            else{
+            this.enemyturn();
+            }
+        }, this, 1200);
+
 
     }
 
@@ -129,7 +161,30 @@ class Battle extends egret.DisplayObjectContainer {
 
         for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].texture = RES.getRes("block2_png");
+                //this._block[i][j].texture = RES.getRes("block2_png");
+                switch (this._blockType[i][j]) {
+                    case BlockType.notmove:
+                        this._block[i][j].texture = RES.getRes("block2_png");
+                        break;
+
+                    case BlockType.upmove:
+                        this._block[i][j].texture = RES.getRes("up_png");
+                        break;
+
+                    case BlockType.downmove:
+                        this._block[i][j].texture = RES.getRes("down_png");
+                        break;
+
+                    case BlockType.leftmove:
+                        this._block[i][j].texture = RES.getRes("left_png");
+                        break;
+
+                    case BlockType.rightmove:
+                        this._block[i][j].texture = RES.getRes("right_png");
+                        break;
+
+                }
+
             }
         }
 
@@ -158,7 +213,7 @@ class Battle extends egret.DisplayObjectContainer {
             this.heroSkills[i].y = this.hero.skills[i].y;
             this.addChild(this.heroSkills[i]);
 
-            this.heroSkillsinfo[i].text = this.hero.skills[i].name + "\n" + this.hero.skills[i].inf+"\nMP消耗："+this.hero.skills[i].MPneed;
+            this.heroSkillsinfo[i].text = this.hero.skills[i].name + "\n" + this.hero.skills[i].inf + "\nMP消耗：" + this.hero.skills[i].MPneed;
             this.heroSkillsinfo[i].size = 18;
             this.heroSkillsinfo[i].x = this.hero.skills[i].x - 28;
             this.heroSkillsinfo[i].y = this.hero.skills[i].y + 20;
@@ -211,11 +266,11 @@ class Battle extends egret.DisplayObjectContainer {
         var hptemp: number, mptemp: number;
         hptemp = Math.floor(this.hero.curHP.value / this.hero._maxHP.value * 25);
         mptemp = Math.floor(this.hero.curMP.value / this.hero._maxMP.value * 25);
-         this._heroHP.textAlign = "justify";
-           this._heroMP.textAlign = "justify";
+        this._heroHP.textAlign = "justify";
+        this._heroMP.textAlign = "justify";
         // this._heroMP.textAlign = egret.HorizontalAlign.CENTER;
-        this._heroHP.text = "HP:"+this.hero.curHP.value+"/"+this.hero._maxHP.value+" ";
-        this._heroMP.text = "MP:"+this.hero.curMP.value+"/"+this.hero._maxMP.value+" ";;
+        this._heroHP.text = "HP:" + this.hero.curHP.value + "/" + this.hero._maxHP.value + " ";
+        this._heroMP.text = "MP:" + this.hero.curMP.value + "/" + this.hero._maxMP.value + " ";;
         for (var i = 0; i < 25; i++) {
             if (i < hptemp) {
                 this._heroHP.text += "|";
@@ -235,8 +290,8 @@ class Battle extends egret.DisplayObjectContainer {
 
         hptemp = Math.floor(this.enemy.curHP.value / this.enemy._maxHP.value * 25);
         mptemp = Math.floor(this.enemy.curMP.value / this.enemy._maxMP.value * 25);
-        this._enemyHP.text = "HP:"+this.enemy.curHP.value+"/"+this.enemy._maxHP.value+" ";
-        this._enemyMP.text = "MP:"+this.enemy.curMP.value+"/"+this.enemy._maxMP.value+" ";
+        this._enemyHP.text = "HP:" + this.enemy.curHP.value + "/" + this.enemy._maxHP.value + " ";
+        this._enemyMP.text = "MP:" + this.enemy.curMP.value + "/" + this.enemy._maxMP.value + " ";
         for (i = 0; i < 25; i++) {
             if (i < hptemp) {
                 this._enemyHP.text += "|";
@@ -257,152 +312,110 @@ class Battle extends egret.DisplayObjectContainer {
     }
 
 
-    herorightmove() {
 
-        // if (this.heropos.x + 1 < this._numCols) {
-        //     this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = false;
-        // }
-        // if (this.heropos.x - 1 >= 0) {
-        //     this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = false;
-        // }
-        // if (this.heropos.y + 1 < this._numRows) {
-        //     this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = false;
-        // }
-        // if (this.heropos.y - 1 >= 0) {
-        //     this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = false;
-        // }
+    heroTouchMove(i: number, j: number) {
 
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
+        switch (this._blockType[i][j]) {
+            case BlockType.notmove:
+                console.log("not move", i, j);
+                break;
+
+            case BlockType.upmove:
+                this.heropos.y--;
+                //this.upDateBattelMap();
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+
+            case BlockType.downmove:
+                this.heropos.y++;
+                //this.upDateBattelMap();
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+
+            case BlockType.rightmove:
+                this.heropos.x++;
+                //this.upDateBattelMap();
+
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+
+            case BlockType.leftmove:
+                this.heropos.x--;
+                //this.upDateBattelMap();
+
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+
         }
 
-        this.heropos.x++;
+        for (var a = 0; a < this._numCols; a++) {
+            for (var b = 0; b < this._numRows; b++) {
+                this._blockType[a][b] = BlockType.notmove;
+            }
+        }
         this.upDateBattelMap();
-
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
+        //this._block[i][j].touchEnabled = false;
     }
 
-    heroleftmove() {
 
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
-        }
-        this.heropos.x--
-        this.upDateBattelMap();
-
-
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
-
-    }
-
-    heroupmove() {
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
-        }
-
-        this.heropos.y--;
-        this.upDateBattelMap();
-
-
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
-
-    }
-
-    herodownmove() {
-
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
-        }
-
-        this.heropos.y++;
-        this.upDateBattelMap();
-
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
-    }
 
     heromove() {
 
         if (this.heropos.x + 1 < this._numCols) {
-            this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = true;
-            this._block[this.heropos.x + 1][this.heropos.y].texture = RES.getRes("right_png");
 
-            if (this._block[this.heropos.x + 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
+            // let rightBlock = this._block[this.heropos.x + 1][this.heropos.y];
+            // rightBlock.texture = RES.getRes("right_png");
+            this._blockType[this.heropos.x + 1][this.heropos.y] = BlockType.rightmove;
 
-                this._block[this.heropos.x + 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
-                //removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
-            }
-
-            this._block[this.heropos.x + 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
         }
 
         if (this.heropos.x - 1 >= 0) {
-            this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = true;
-            this._block[this.heropos.x - 1][this.heropos.y].texture = RES.getRes("left_png");
+            // let leftBlock = this._block[this.heropos.x - 1][this.heropos.y];
+            // leftBlock.texture = RES.getRes("left_png");
+            this._blockType[this.heropos.x - 1][this.heropos.y] = BlockType.leftmove;
 
-            if (this._block[this.heropos.x - 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x - 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
-            }
-
-            this._block[this.heropos.x - 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
         }
 
         if (this.heropos.y + 1 < this._numRows) {
-            this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = true;
-            this._block[this.heropos.x][this.heropos.y + 1].texture = RES.getRes("down_png");
+            // let downBlock = this._block[this.heropos.x][this.heropos.y + 1];
+            // downBlock.texture = RES.getRes("down_png");
+            this._blockType[this.heropos.x][this.heropos.y + 1] = BlockType.downmove;
 
-            if (this._block[this.heropos.x][this.heropos.y + 1].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x][this.heropos.y + 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
-            }
-
-            this._block[this.heropos.x][this.heropos.y + 1].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
         }
 
 
         if (this.heropos.y - 1 >= 0) {
-            this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = true;
-            this._block[this.heropos.x][this.heropos.y - 1].texture = RES.getRes("up_png");
+            // let upBlock = this._block[this.heropos.x][this.heropos.y - 1];
+            // upBlock.texture = RES.getRes("up_png");
+            this._blockType[this.heropos.x][this.heropos.y - 1] = BlockType.upmove;
 
-            if (this._block[this.heropos.x][this.heropos.y - 1].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x][this.heropos.y - 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
-            }
-
-            this._block[this.heropos.x][this.heropos.y - 1].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
         }
-
-        console.log(this.heropos);
-
+        this.upDateBattelMap();
+        //console.log(this.heropos);
     }
 
     judgeDistance(skill: SkillData): boolean {
@@ -475,7 +488,7 @@ class Battle extends egret.DisplayObjectContainer {
 
 
     heroattack(skill: SkillData) {
-        
+
         var temp = 0;
         if (this.judgeDistance(skill) == true && this.hero.curMP.value >= skill.MPneed) {
             temp = skill.ratio * this.hero._ATK.value / 100 - Math.floor(Math.random() * 5);
@@ -490,37 +503,37 @@ class Battle extends egret.DisplayObjectContainer {
         this.updateALLState();
     }
 
-    herobuff(skill:SkillData) {
+    herobuff(skill: SkillData) {
 
-        if ( this.hero.curMP.value >= skill.MPneed) {
-        this.chance--;
-        this.hero.curMP.value -= skill.MPneed;
-        switch (skill.type) {
+        if (this.hero.curMP.value >= skill.MPneed) {
+            this.chance--;
+            this.hero.curMP.value -= skill.MPneed;
+            switch (skill.type) {
 
-            case SkillType.speedbuff:
-                this.chance+=2;
-                break;
+                case SkillType.speedbuff:
+                    this.chance += 2;
+                    break;
 
-            case SkillType.atkbuff:
-                this.hero._ATK.value = skill.ratio / 100 * this.hero._ATK.value;
-                break;
+                case SkillType.atkbuff:
+                    this.hero._ATK.value = skill.ratio / 100 * this.hero._ATK.value;
+                    break;
 
-            case SkillType.HPbuff:
-                this.hero.curHP.value = skill.ratio / 100 * this.hero.curHP.value;
-        }
+                case SkillType.HPbuff:
+                    this.hero.curHP.value = skill.ratio / 100 * this.hero.curHP.value;
+            }
         }
         else {
             this.battleinfo.text = "MP不足";
         }
     }
 
-    herospecial(skill: SkillData){
-     switch (skill.type) {
-         case SkillType.roll:
-         break;
-         case SkillType.jump:
-         break;
-     }
+    herospecial(skill: SkillData) {
+        switch (skill.type) {
+            case SkillType.roll:
+                break;
+            case SkillType.jump:
+                break;
+        }
     }
 
     enemyattack() {
@@ -581,3 +594,101 @@ function setEnemy(level: number, ad: string): Enemy {
 
 
 
+
+
+
+
+//  herorightmove() {
+
+//         // if (this.heropos.x + 1 < this._numCols) {
+//         //     this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = false;
+//         // }
+//         // if (this.heropos.x - 1 >= 0) {
+//         //     this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = false;
+//         // }
+//         // if (this.heropos.y + 1 < this._numRows) {
+//         //     this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = false;
+//         // }
+//         // if (this.heropos.y - 1 >= 0) {
+//         //     this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = false;
+//         // }
+
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+
+//         this.heropos.x++;
+//         this.upDateBattelMap();
+
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+//     }
+
+//     heroleftmove() {
+
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+//         this.heropos.x--
+//         this.upDateBattelMap();
+
+
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+
+//     }
+
+//     heroupmove() {
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+
+//         this.heropos.y--;
+//         this.upDateBattelMap();
+
+
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+
+//     }
+
+//     herodownmove() {
+
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+
+//         this.heropos.y++;
+//         this.upDateBattelMap();
+
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+//     }

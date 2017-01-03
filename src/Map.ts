@@ -2,6 +2,7 @@
 class TileMap extends egret.DisplayObjectContainer {
 
     public static TILE_SIZE: number = 53;
+    public static TILE_BATTLE_SIZE: number = 80;
 
     _player: Player;
     _speed: number = 3;

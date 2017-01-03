@@ -41,8 +41,8 @@ class FightCommand implements Command {
     execute(callback: Function): void {
 
         console.log("开始战斗");
-        console.log(PickHeroScene.getCurrentScene().hero);
-        var battle = new Battle(PickHeroScene.getCurrentScene().hero, 1, this.enemyad, 6, 6);
+        console.log(UIScene.getCurrentScene().hero);
+        var battle = new Battle(UIScene.getCurrentScene().hero, 1, this.enemyad, 6, 6);
         if (GameScene.getCurrentScene().main.$children.length != 0)
         { GameScene.getCurrentScene().main.removeChildren(); }
         GameScene.getCurrentScene().main.addChild(battle);
@@ -53,20 +53,20 @@ class FightCommand implements Command {
         //     callback();
         // }
         //     }, this, 500)
-        egret.setInterval(() => {
+       var batteEnd =  egret.setInterval(() => {
             if (battle.judgeEnemyDeath() == true) {
                 console.log("敌人死亡，结束战斗");
                 callback();
                 GameScene.getCurrentScene().main.removeChildren();
-               PickHeroScene.getCurrentScene().gamehappyend();
-
+               UIScene.getCurrentScene().gamehappyend();
+               egret.clearInterval(batteEnd);
             }
             if (battle.judgeHeroDeath() == true) {
                 console.log("英雄阵亡，结束战斗");
                 callback();
                 GameScene.getCurrentScene().main.removeChildren();
-                PickHeroScene.getCurrentScene().gamebadend();
-                
+                UIScene.getCurrentScene().gamebadend();
+                egret.clearInterval(batteEnd);
             }
 
         }, this, 500);
@@ -95,10 +95,10 @@ class TalkCommand implements Command {
     execute(callback: Function): void {
 
         if (this.npcid == "NPC_1") {
-            PickHeroScene.getCurrentScene().dp1.showDpanel();
+            UIScene.getCurrentScene().dp1.showDpanel();
         }
         if (this.npcid == "NPC_2") {
-            PickHeroScene.getCurrentScene().dp2.showDpanel();
+            UIScene.getCurrentScene().dp2.showDpanel();
         }
         console.log("打开对话框");
         egret.setTimeout(function () {
@@ -109,10 +109,10 @@ class TalkCommand implements Command {
 
     cancel(callback: Function) {
         if (this.npcid == "NPC_1") {
-            PickHeroScene.getCurrentScene().dp1.disshowDpanel();
+            UIScene.getCurrentScene().dp1.disshowDpanel();
         }
         if (this.npcid == "NPC_2") {
-            PickHeroScene.getCurrentScene().dp2.disshowDpanel();
+            UIScene.getCurrentScene().dp2.disshowDpanel();
         }
         console.log("关闭对话框");
         callback();

@@ -38,6 +38,7 @@ class GameScene {
 
     public player: Player;
     public main: Main;
+    public ticker;
 
     private static scene: GameScene = new GameScene();
     public static replaceScene(scene: GameScene) {
@@ -74,19 +75,27 @@ class GameScene {
             var path = astar._path;
             var current = path.shift();
 
-            let ticker = () => {
+            this.ticker = () => {
                 playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE);
                 playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE);
                 GameScene.getCurrentScene().player._body.x += 3 * (current.x - playerX);
                 GameScene.getCurrentScene().player._body.y += 3 * (current.y - playerY);
+                //  GameScene.getCurrentScene().player._body.x += 3 * (current.x - playerX);
+                // GameScene.getCurrentScene().player._body.y += 3 * (current.y - playerY);
                 if (playerX == current.x && playerY == current.y) {
+
+                    var tween = egret.Tween.get(null, 300);
+                    tween.pause();
+
+
+
                     GameScene.getCurrentScene().player._body.x = current.x * TileMap.TILE_SIZE;
                     GameScene.getCurrentScene().player._body.y = current.y * TileMap.TILE_SIZE;
 
                     if (astar._path.length == 0) {
                         console.log("寻路完毕");
 
-                        egret.Ticker.getInstance().unregister(ticker, this);
+                        egret.Ticker.getInstance().unregister(this.ticker, this);
                         // egret.setTimeout(function () {
                         console.log("结束移动")
                         callback();
@@ -100,7 +109,7 @@ class GameScene {
             }
 
 
-            egret.Ticker.getInstance().register(ticker, this);
+            egret.Ticker.getInstance().register(this.ticker, this);
 
             // egret.setTimeout(function () {
             //     console.log("结束移动")
@@ -109,48 +118,172 @@ class GameScene {
         }
     }
     public stopMove(callback: Function) {
-        console.log("取消移动")
-        callback();
+
+        egret.Ticker.getInstance().unregister(this.ticker, this);
+        egret.setTimeout(function () {
+            console.log("中断移动");
+            callback();
+        }, this, 500);
     }
 
 }
 
-class PickHeroScene {
-    private static scene: PickHeroScene;
+class UIScene {
+    private static scene: UIScene;
     public ad: string;
     public hero: Hero;
     public dp1: DialoguePanel;
     public dp2: DialoguePanel;
-    public static replaceScene(scene: PickHeroScene) {
-        PickHeroScene.scene = scene;
+    public static replaceScene(scene: UIScene) {
+        UIScene.scene = scene;
     }
 
-    public static getCurrentScene(): PickHeroScene {
-        return PickHeroScene.scene;
+    public static getCurrentScene(): UIScene {
+        return UIScene.scene;
     }
 
-    public showPick(stageW, main: Main) {
+    public gameMenu() {
+
+        var stageW: number = 640;
+        var stageH: number = 1136;
+        console.log(stageW, stageH);
+        var BlackMask = new egret.Shape();
+        BlackMask.graphics.beginFill(0x000000, 1);
+        BlackMask.graphics.drawRect(0, 0, stageW, stageH);
+        BlackMask.graphics.endFill();
+        BlackMask.width = stageW;
+        BlackMask.height = stageH;
+        GameScene.getCurrentScene().main.addChild(BlackMask);
+
+        //   UIScene.getCurrentScene().hero = SetTriangle();
+        //   var battle = new Battle(UIScene.getCurrentScene().hero,1,"npc_2_png",6,6);
+        //  GameScene.getCurrentScene().main.addChild(battle);
+
+        var WhiteMask = new egret.Shape();
+        WhiteMask.graphics.beginFill(0xFFFFFF, 1);
+        WhiteMask.graphics.drawRect(0, 0, stageW, stageH);
+        WhiteMask.graphics.endFill();
+        WhiteMask.width = stageW;
+        WhiteMask.height = stageH;
+        // //this.addChild(WhiteMask);
+        // //WhiteMask.alpha = 0;
+
+        var back: egret.Bitmap = new egret.Bitmap();
+        back.texture = RES.getRes("menu_jpg");
+        GameScene.getCurrentScene().main.addChild(back);
+        var stageW: number = 640;
+        var stageH: number = 1136;
+        back.width = stageW;
+        back.height = stageH;
+        back.y = -150;
+        var count = 0;
+        egret.Ticker.getInstance().register(() => {
+            if (count < 5) {
+                back.scaleY *= 1.003;
+            }
+            else if (count < 10 || count >= 5) {
+                back.scaleY /= 1.003;
+            }
+            count += 0.5;
+            if (count >= 10) {
+                count = 0;
+            }
+
+        }, this);
+
+
+        var Title = new egret.TextField();
+        Title.textColor = 0xffffff;
+        Title.width = stageW - 172;
+        Title.textAlign = "center";
+        Title.text = "二维位面之纯形争霸";
+        Title.size = 50;
+        Title.fontFamily = '黑体';
+        Title.x = 100;
+        Title.y = 100;
+        GameScene.getCurrentScene().main.addChild(Title);
+
+        var start = new egret.TextField();
+        start.textColor = 0xffffff;
+        start.width = stageW - 172;
+        start.textAlign = "center";
+        start.text = "开始游戏";
+        start.size = 40;
+        start.fontFamily = '黑体';
+        start.x = 90;
+        start.y = 800;
+        GameScene.getCurrentScene().main.addChild(start);
+
+        var material = new egret.TextField();
+        material.textColor = 0xffffff;
+        material.width = stageW - 172;
+        material.textAlign = "center";
+        material.text = "背景资料";
+        material.size = 40;
+        material.fontFamily = '黑体';
+        material.x = 90;
+        material.y = 850;
+        GameScene.getCurrentScene().main.addChild(material);
+
+        material.touchEnabled = true;
+        material.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+            var p = new PageContainer();
+            GameScene.getCurrentScene().main.removeChildren();
+            GameScene.getCurrentScene().main.addChild(p);
+        }, this)
+
+
+        var about = new egret.TextField();
+        about.textColor = 0xffffff;
+        about.width = stageW - 172;
+        about.textAlign = "center";
+        about.text = "游戏理念";
+        about.size = 40;
+        about.fontFamily = '黑体';
+        about.x = 90;
+        about.y = 900;
+        GameScene.getCurrentScene().main.addChild(about);
+        about.touchEnabled = true;
+        about.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+            GameScene.getCurrentScene().main.removeChildren();
+            UIScene.getCurrentScene().gameabout();
+        }, this);
+
+        start.touchEnabled = true;
+        start.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+
+            GameScene.getCurrentScene().main.removeChild(start);
+            GameScene.getCurrentScene().main.removeChild(material);
+            GameScene.getCurrentScene().main.removeChild(about);
+            GameScene.getCurrentScene().main.removeChild(Title);
+            GameScene.getCurrentScene().main.removeChild(back);
+            UIScene.getCurrentScene().showPick();
+
+        }, this);
+    }
+
+    public showPick() {
         var pick = new egret.TextField();
         pick.textColor = 0xffffff;
-        pick.width = stageW - 172;
+        pick.width = 640 - 172;
         pick.textAlign = "center";
         pick.text = "选择进入一名纯形战士视角";
         pick.size = 36;
         pick.fontFamily = '黑体';
         pick.x = 90;
         pick.y = 400;
-        main.addChild(pick);
+        GameScene.getCurrentScene().main.addChild(pick);
 
         var sanjiao = new egret.TextField();
         sanjiao.textColor = 0xffffff;
-        sanjiao.width = stageW - 172;
+        sanjiao.width = 640 - 172;
         sanjiao.textAlign = "center";
         sanjiao.text = "▲三角（善于迂回和远程输出）";
         sanjiao.size = 30;
         sanjiao.fontFamily = '黑体';
         sanjiao.x = 90;
         sanjiao.y = 600;
-        main.addChild(sanjiao);
+        GameScene.getCurrentScene().main.addChild(sanjiao);
         sanjiao.touchEnabled = true;
         sanjiao.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
             this.ad = "sanjiao_png";
@@ -171,23 +304,23 @@ class PickHeroScene {
 
             }
 
-            main.removeChild(pick);
-            main.removeChild(sanjiao);
-            main.removeChild(fangkuai);
-            main.removeChild(zhengyuan);
-            this.gamestart(main);
+            GameScene.getCurrentScene().main.removeChild(pick);
+            GameScene.getCurrentScene().main.removeChild(sanjiao);
+            GameScene.getCurrentScene().main.removeChild(fangkuai);
+            GameScene.getCurrentScene().main.removeChild(zhengyuan);
+            this.gamestart();
         }, this);
 
         var fangkuai = new egret.TextField();
         fangkuai.textColor = 0xffffff;
-        fangkuai.width = stageW - 172;
+        fangkuai.width = 640 - 172;
         fangkuai.textAlign = "center";
         fangkuai.text = "■方块（侵略性强并善于近战）";
         fangkuai.size = 30;
         fangkuai.fontFamily = '黑体';
         fangkuai.x = 90;
         fangkuai.y = 650;
-        main.addChild(fangkuai);
+        GameScene.getCurrentScene().main.addChild(fangkuai);
         fangkuai.touchEnabled = true;
         fangkuai.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
             this.ad = "fangkuai_png";
@@ -208,24 +341,24 @@ class PickHeroScene {
 
             }
 
-            main.removeChild(pick);
-            main.removeChild(sanjiao);
-            main.removeChild(fangkuai);
-            main.removeChild(zhengyuan);
-            this.gamestart(main);
+            GameScene.getCurrentScene().main.removeChild(pick);
+            GameScene.getCurrentScene().main.removeChild(sanjiao);
+            GameScene.getCurrentScene().main.removeChild(fangkuai);
+            GameScene.getCurrentScene().main.removeChild(zhengyuan);
+            this.gamestart();
 
         }, this);
 
         var zhengyuan = new egret.TextField();
         zhengyuan.textColor = 0xffffff;
-        zhengyuan.width = stageW - 172;
+        zhengyuan.width = 640 - 172;
         zhengyuan.textAlign = "center";
         zhengyuan.text = "●正圆（兼具灵活性和消耗战）";
         zhengyuan.size = 30;
         zhengyuan.fontFamily = '黑体';
         zhengyuan.x = 90;
         zhengyuan.y = 700;
-        main.addChild(zhengyuan);
+        GameScene.getCurrentScene().main.addChild(zhengyuan);
         zhengyuan.touchEnabled = true;
         zhengyuan.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
             this.ad = "zhengyuan_png";
@@ -246,15 +379,43 @@ class PickHeroScene {
 
             }
 
-            main.removeChild(pick);
-            main.removeChild(sanjiao);
-            main.removeChild(fangkuai);
-            main.removeChild(zhengyuan);
-            this.gamestart(main);
+            GameScene.getCurrentScene().main.removeChild(pick);
+            GameScene.getCurrentScene().main.removeChild(sanjiao);
+            GameScene.getCurrentScene().main.removeChild(fangkuai);
+            GameScene.getCurrentScene().main.removeChild(zhengyuan);
+            this.gamestart();
         }, this);
     }
 
-    public gamestart(main: Main) {
+    public gameabout() {
+
+        var rect = new egret.Shape();
+        var textField = new egret.TextField();
+        rect.graphics.beginFill(0x000000, 1);
+        rect.graphics.drawRect(0, 0, 640, 1136);
+        rect.graphics.endFill();
+        GameScene.getCurrentScene().main.addChild(rect);
+        textField.text = "作者 14081216 白宇昆\n这是一款半即时的战棋对抗游戏\n改编的刘慈欣的《镜子》作为剧情背景\n在二维位面里\n形状越正，血统越纯\n借几何喻人，反应现实\n未来可能会加入的新细节\n根据随机的颜色改变敌人的属性\nR攻击撞击力\nG连接深入能力\nB特殊攻击能力\n六边形，三角形等对战地图";
+        GameScene.getCurrentScene().main.addChild(textField);
+        textField.size = 30;
+        textField.y = 200;
+        textField.x = 60;
+        textField.width = 620;
+        var back = new egret.TextField();
+        back.text = "返回";
+        back.size = 30;
+        back.touchEnabled = true;
+        back.y = 900;
+        back.x = 300;
+        GameScene.getCurrentScene().main.addChild(back);
+        back.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+            GameScene.getCurrentScene().main.removeChildren();
+            UIScene.getCurrentScene().gameMenu();
+        }, this)
+
+    }
+
+    public gamestart() {
 
         var Dpanel_1: DialoguePanel = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了，去找还有希望被拯救的形状吧");
         var Dpanel_2: DialoguePanel = new DialoguePanel("我还有救，但变得不规则好像也没什么不好，先跟我较量看看吧");
@@ -309,35 +470,35 @@ class PickHeroScene {
         var player: Player = new Player(this.ad);
         GameScene.getCurrentScene().player = player;
         var map: TileMap = new TileMap(GameScene.getCurrentScene().player);
-        main.addChild(map);
-        main.addChild(GameScene.getCurrentScene().player);
+        GameScene.getCurrentScene().main.addChild(map);
+        GameScene.getCurrentScene().main.addChild(GameScene.getCurrentScene().player);
         GameScene.getCurrentScene().player.idle();
 
-        main.addChild(mainPanel);
-        main.addChild(NPC_1);
-        main.addChild(NPC_2);
-        main.addChild(this.dp1);
-        main.addChild(this.dp2);
+        GameScene.getCurrentScene().main.addChild(mainPanel);
+        GameScene.getCurrentScene().main.addChild(NPC_1);
+        GameScene.getCurrentScene().main.addChild(NPC_2);
+        GameScene.getCurrentScene().main.addChild(this.dp1);
+        GameScene.getCurrentScene().main.addChild(this.dp2);
 
     }
 
-    public gamebadend(){
-         var no: egret.Bitmap = new egret.Bitmap();
-       no.texture = RES.getRes("End_jpg");
-       no.width = 640;
-       no.height =1134;
+    public gamebadend() {
+        var no: egret.Bitmap = new egret.Bitmap();
+        no.texture = RES.getRes("End_jpg");
+        no.width = 640;
+        no.height = 1134;
         GameScene.getCurrentScene().main.addChild(no);
     }
 
-    public gamehappyend(){
+    public gamehappyend() {
 
-         var blackback = new egret.Shape();
+        var blackback = new egret.Shape();
         blackback.graphics.beginFill(0x000000, 1);
         blackback.graphics.drawRect(0, 0, 640, 1134);
         blackback.graphics.endFill();
         blackback.width = 640;
         blackback.height = 1134;
-       GameScene.getCurrentScene().main.addChild(blackback);
+        GameScene.getCurrentScene().main.addChild(blackback);
 
         var win = new egret.TextField();
         win.textColor = 0xffffff;

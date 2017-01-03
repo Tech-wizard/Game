@@ -1,6 +1,15 @@
+var BlockType;
+(function (BlockType) {
+    BlockType[BlockType["notmove"] = 0] = "notmove";
+    BlockType[BlockType["upmove"] = 1] = "upmove";
+    BlockType[BlockType["downmove"] = 2] = "downmove";
+    BlockType[BlockType["leftmove"] = 3] = "leftmove";
+    BlockType[BlockType["rightmove"] = 4] = "rightmove";
+})(BlockType || (BlockType = {}));
 var Battle = (function (_super) {
     __extends(Battle, _super);
     function Battle(hero, level, enemyad, x, y) {
+        var _this = this;
         _super.call(this);
         this.heropos = new Pos(0, 5);
         this.enemypos = new Pos(5, 0);
@@ -8,6 +17,7 @@ var Battle = (function (_super) {
         this.heroSkills = [];
         this.heroSkillsinfo = [];
         this._block = [];
+        this._blockType = [];
         this._herobody = new egret.Bitmap();
         this._heroHP = new egret.TextField();
         this._heroMP = new egret.TextField();
@@ -29,7 +39,7 @@ var Battle = (function (_super) {
         this.battleinfo.size = 20;
         this.addChild(this.battleinfo);
         this.battleinfo.x = 100;
-        this.battleinfo.y = 700;
+        this.battleinfo.y = 740;
         switch (hero.name) {
             case "三角":
                 this._herobody.texture = RES.getRes("sanjiao_png");
@@ -48,14 +58,25 @@ var Battle = (function (_super) {
         this._numRows = y;
         for (var i = 0; i < this._numCols; i++) {
             this._block[i] = new Array();
+            this._blockType[i] = new Array();
             for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j] = new egret.Bitmap();
-                this._block[i][j].width = TileMap.TILE_SIZE;
-                this._block[i][j].height = TileMap.TILE_SIZE;
+                var block = new egret.Bitmap();
+                block['i'] = i;
+                block['j'] = j;
+                this._block[i][j] = block;
+                this._block[i][j].width = TileMap.TILE_BATTLE_SIZE;
+                this._block[i][j].height = TileMap.TILE_BATTLE_SIZE;
                 this._block[i][j].texture = RES.getRes("block2_png");
-                this._block[i][j].x = i * TileMap.TILE_SIZE + 170;
-                this._block[i][j].y = j * TileMap.TILE_SIZE + 300;
+                this._block[i][j].x = i * TileMap.TILE_BATTLE_SIZE + 80;
+                this._block[i][j].y = j * TileMap.TILE_BATTLE_SIZE + 240;
                 this.addChild(this._block[i][j]);
+                this._block[i][j].touchEnabled = true;
+                this._blockType[i][j] = BlockType.notmove;
+                this._block[i][j].addEventListener(egret.TouchEvent.TOUCH_TAP, function (e) {
+                    console.log(e.target);
+                    console.log(e.target.i, e.target.j);
+                    _this.heroTouchMove(e.target.i, e.target.j);
+                }, this);
             }
         }
         for (i = 0; i < 5; i++) {
@@ -67,7 +88,7 @@ var Battle = (function (_super) {
         this.upDateBattelMap();
         this.showSkills();
         this.showALLState();
-        console.log(this.hero);
+        //console.log(this.hero);
         this.updateALLState();
         this.heroturn();
     }
@@ -91,7 +112,7 @@ var Battle = (function (_super) {
     };
     p.heroturnend = function () {
         var _this = this;
-        egret.setInterval(function () {
+        var turn = egret.setInterval(function () {
             if (_this.chance = 0) {
                 _this.heroSkills[0].touchEnabled = false;
                 _this.heroSkills[1].touchEnabled = false;
@@ -99,13 +120,36 @@ var Battle = (function (_super) {
                 _this.heroSkills[3].touchEnabled = false;
                 _this.heroSkills[4].touchEnabled = false;
             }
-            _this.enemyturn();
-        }, this, 1000);
+            if (_this.judgeEnemyDeath() == true || _this.judgeHeroDeath() == true) {
+                console.log("结束战斗");
+                egret.clearInterval(turn);
+            }
+            else {
+                _this.enemyturn();
+            }
+        }, this, 1200);
     };
     p.upDateBattelMap = function () {
         for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].texture = RES.getRes("block2_png");
+                //this._block[i][j].texture = RES.getRes("block2_png");
+                switch (this._blockType[i][j]) {
+                    case BlockType.notmove:
+                        this._block[i][j].texture = RES.getRes("block2_png");
+                        break;
+                    case BlockType.upmove:
+                        this._block[i][j].texture = RES.getRes("up_png");
+                        break;
+                    case BlockType.downmove:
+                        this._block[i][j].texture = RES.getRes("down_png");
+                        break;
+                    case BlockType.leftmove:
+                        this._block[i][j].texture = RES.getRes("left_png");
+                        break;
+                    case BlockType.rightmove:
+                        this._block[i][j].texture = RES.getRes("right_png");
+                        break;
+                }
             }
         }
         for (var i = 0; i < this._numCols; i++) {
@@ -215,116 +259,87 @@ var Battle = (function (_super) {
             }
         }
     };
-    p.herorightmove = function () {
-        // if (this.heropos.x + 1 < this._numCols) {
-        //     this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = false;
-        // }
-        // if (this.heropos.x - 1 >= 0) {
-        //     this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = false;
-        // }
-        // if (this.heropos.y + 1 < this._numRows) {
-        //     this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = false;
-        // }
-        // if (this.heropos.y - 1 >= 0) {
-        //     this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = false;
-        // }
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
+    p.heroTouchMove = function (i, j) {
+        switch (this._blockType[i][j]) {
+            case BlockType.notmove:
+                console.log("not move", i, j);
+                break;
+            case BlockType.upmove:
+                this.heropos.y--;
+                //this.upDateBattelMap();
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+            case BlockType.downmove:
+                this.heropos.y++;
+                //this.upDateBattelMap();
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+            case BlockType.rightmove:
+                this.heropos.x++;
+                //this.upDateBattelMap();
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+            case BlockType.leftmove:
+                this.heropos.x--;
+                //this.upDateBattelMap();
+                if (this.hero.name == "三角") {
+                    this.hero.curMP.value += 10;
+                    if (this.hero.curMP.value > 100) {
+                        this.hero.curMP.value = 100;
+                    }
+                    this.updateALLState();
+                }
+                break;
+        }
+        for (var a = 0; a < this._numCols; a++) {
+            for (var b = 0; b < this._numRows; b++) {
+                this._blockType[a][b] = BlockType.notmove;
             }
         }
-        this.heropos.x++;
         this.upDateBattelMap();
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
-    };
-    p.heroleftmove = function () {
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
-        }
-        this.heropos.x--;
-        this.upDateBattelMap();
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
-    };
-    p.heroupmove = function () {
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
-        }
-        this.heropos.y--;
-        this.upDateBattelMap();
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
-    };
-    p.herodownmove = function () {
-        for (var i = 0; i < this._numCols; i++) {
-            for (var j = 0; j < this._numRows; j++) {
-                this._block[i][j].touchEnabled = false;
-            }
-        }
-        this.heropos.y++;
-        this.upDateBattelMap();
-        if (this.hero.name == "三角") {
-            this.hero.curMP.value += 10;
-            if (this.hero.curMP.value > 100) {
-                this.hero.curMP.value = 100;
-            }
-            this.updateALLState();
-        }
+        //this._block[i][j].touchEnabled = false;
     };
     p.heromove = function () {
         if (this.heropos.x + 1 < this._numCols) {
-            this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = true;
-            this._block[this.heropos.x + 1][this.heropos.y].texture = RES.getRes("right_png");
-            if (this._block[this.heropos.x + 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x + 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
-            }
-            this._block[this.heropos.x + 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herorightmove, this);
+            // let rightBlock = this._block[this.heropos.x + 1][this.heropos.y];
+            // rightBlock.texture = RES.getRes("right_png");
+            this._blockType[this.heropos.x + 1][this.heropos.y] = BlockType.rightmove;
         }
         if (this.heropos.x - 1 >= 0) {
-            this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = true;
-            this._block[this.heropos.x - 1][this.heropos.y].texture = RES.getRes("left_png");
-            if (this._block[this.heropos.x - 1][this.heropos.y].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x - 1][this.heropos.y].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
-            }
-            this._block[this.heropos.x - 1][this.heropos.y].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heroleftmove, this);
+            // let leftBlock = this._block[this.heropos.x - 1][this.heropos.y];
+            // leftBlock.texture = RES.getRes("left_png");
+            this._blockType[this.heropos.x - 1][this.heropos.y] = BlockType.leftmove;
         }
         if (this.heropos.y + 1 < this._numRows) {
-            this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = true;
-            this._block[this.heropos.x][this.heropos.y + 1].texture = RES.getRes("down_png");
-            if (this._block[this.heropos.x][this.heropos.y + 1].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x][this.heropos.y + 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
-            }
-            this._block[this.heropos.x][this.heropos.y + 1].addEventListener(egret.TouchEvent.TOUCH_TAP, this.herodownmove, this);
+            // let downBlock = this._block[this.heropos.x][this.heropos.y + 1];
+            // downBlock.texture = RES.getRes("down_png");
+            this._blockType[this.heropos.x][this.heropos.y + 1] = BlockType.downmove;
         }
         if (this.heropos.y - 1 >= 0) {
-            this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = true;
-            this._block[this.heropos.x][this.heropos.y - 1].texture = RES.getRes("up_png");
-            if (this._block[this.heropos.x][this.heropos.y - 1].hasEventListener(egret.TouchEvent.TOUCH_TAP) == true) {
-                this._block[this.heropos.x][this.heropos.y - 1].removeEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
-            }
-            this._block[this.heropos.x][this.heropos.y - 1].addEventListener(egret.TouchEvent.TOUCH_TAP, this.heroupmove, this);
+            // let upBlock = this._block[this.heropos.x][this.heropos.y - 1];
+            // upBlock.texture = RES.getRes("up_png");
+            this._blockType[this.heropos.x][this.heropos.y - 1] = BlockType.upmove;
         }
-        console.log(this.heropos);
+        this.upDateBattelMap();
+        //console.log(this.heropos);
     };
     p.judgeDistance = function (skill) {
         if (Math.abs(this.heropos.x - this.enemypos.x) +
@@ -474,4 +489,80 @@ function setEnemy(level, ad) {
     ];
     return enemy;
 }
+//  herorightmove() {
+//         // if (this.heropos.x + 1 < this._numCols) {
+//         //     this._block[this.heropos.x + 1][this.heropos.y].touchEnabled = false;
+//         // }
+//         // if (this.heropos.x - 1 >= 0) {
+//         //     this._block[this.heropos.x - 1][this.heropos.y].touchEnabled = false;
+//         // }
+//         // if (this.heropos.y + 1 < this._numRows) {
+//         //     this._block[this.heropos.x][this.heropos.y + 1].touchEnabled = false;
+//         // }
+//         // if (this.heropos.y - 1 >= 0) {
+//         //     this._block[this.heropos.x][this.heropos.y - 1].touchEnabled = false;
+//         // }
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+//         this.heropos.x++;
+//         this.upDateBattelMap();
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+//     }
+//     heroleftmove() {
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+//         this.heropos.x--
+//         this.upDateBattelMap();
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+//     }
+//     heroupmove() {
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+//         this.heropos.y--;
+//         this.upDateBattelMap();
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+//     }
+//     herodownmove() {
+//         for (var i = 0; i < this._numCols; i++) {
+//             for (var j = 0; j < this._numRows; j++) {
+//                 this._block[i][j].touchEnabled = false;
+//             }
+//         }
+//         this.heropos.y++;
+//         this.upDateBattelMap();
+//         if (this.hero.name == "三角") {
+//             this.hero.curMP.value += 10;
+//             if (this.hero.curMP.value > 100) {
+//                 this.hero.curMP.value = 100;
+//             }
+//             this.updateALLState();
+//         }
+//     } 
 //# sourceMappingURL=Battle.js.map

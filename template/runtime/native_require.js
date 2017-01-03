@@ -20,6 +20,7 @@ var game_file_list = [
 	"bin-debug/Node.js",
 	"bin-debug/Panel.js",
 	"bin-debug/Observer.js",
+	"bin-debug/Page.js",
 	"bin-debug/Player.js",
 	"bin-debug/Property.js",
 	"bin-debug/Scene.js",
