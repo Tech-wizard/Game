@@ -62,19 +62,19 @@ var Hero = (function () {
         this.isInTeam = false;
         this.equipments = [];
         this.level = 1;
-        this.curHP = new Property("当前血量", null);
-        this._maxHP = new Property("最大血量", null);
-        this.curMP = new Property("当前魔量", null);
-        this._maxMP = new Property("最大魔量", null);
+        this.curHP = new Property("当前HP", null);
+        this._maxHP = new Property("最大HP", null);
+        this.curMP = new Property("当前MP", null);
+        this._maxMP = new Property("最大MP", null);
         this._ATK = new Property("伤害", null);
         this._CRIT = new Property("暴击", null);
         this._EV = new Property("闪避", null);
         this._HIT = new Property("命中", null);
         this.name = name;
-        this.STR = new Property("力量", str);
-        this.CON = new Property("体力", con);
-        this.DEX = new Property("技巧", dex);
-        this.MAG = new Property("魔力", mag);
+        this.STR = new Property("形状力", str);
+        this.CON = new Property("面积", con);
+        this.DEX = new Property("稳定性", dex);
+        this.MAG = new Property("抽象性", mag);
         this.SPD = new Property("速度", spd);
         this.quality = new Property("成长", quality);
         this.heroInformationUpdate();
@@ -153,14 +153,14 @@ var Hero = (function () {
 }());
 egret.registerClass(Hero,'Hero');
 var Equipment = (function () {
-    function Equipment(name, type, atk, runes) {
-        //jewels: jewel[] = [];
+    function Equipment(name, ad, type, atk, runes) {
         this.STR = 0; //力量
         this.CON = 0; //体力
         this.DEX = 0; //技巧
         this.MAG = 0; //魔力
         this.SPD = 0; //速度
         this.runes = [];
+        this.ad = ad;
         this.name = name;
         this.equipmentType = type;
         this._attack = atk;
@@ -191,19 +191,19 @@ var rune = (function () {
         this.quality = quality;
         switch (Math.floor(Math.random() * 4)) {
             case 0:
-                this.STR += Math.floor(Math.random() * 12) * this.quality;
+                this.STR += Math.floor(Math.random() * 6) * this.quality;
                 break;
             case 1:
-                this.CON += Math.floor(Math.random() * 12) * this.quality;
+                this.CON += Math.floor(Math.random() * 6) * this.quality;
                 break;
             case 2:
-                this.DEX += Math.floor(Math.random() * 12) * this.quality;
+                this.DEX += Math.floor(Math.random() * 6) * this.quality;
                 break;
             case 3:
-                this.MAG += Math.floor(Math.random() * 12) * this.quality;
+                this.MAG += Math.floor(Math.random() * 6) * this.quality;
                 break;
             case 4:
-                this.SPD += Math.floor(Math.random() * 12) * this.quality;
+                this.SPD += Math.floor(Math.random() * 6) * this.quality;
                 break;
         }
     }
@@ -212,7 +212,7 @@ var rune = (function () {
 }());
 egret.registerClass(rune,'rune');
 function SetTriangle() {
-    var sanjiao = new Hero("三角", 47, 77, 0, 10, 2, 0);
+    var sanjiao = new Hero("三角", 47, 77, 10, 10, 2, 7);
     sanjiao.CONUP = 7;
     sanjiao.STRUP = 7;
     sanjiao.skills = [
@@ -225,7 +225,7 @@ function SetTriangle() {
     return sanjiao;
 }
 function SetSquare() {
-    var fangkuai = new Hero("方块", 50, 100, 0, 10, 2, 0);
+    var fangkuai = new Hero("方块", 50, 100, 8, 10, 2, 10);
     fangkuai.CONUP = 10;
     fangkuai.STRUP = 10;
     fangkuai.skills = [
@@ -238,15 +238,15 @@ function SetSquare() {
     return fangkuai;
 }
 function SetCircle() {
-    var zhengyuan = new Hero("正圆", 48, 120, 0, 10, 2, 0);
+    var zhengyuan = new Hero("正圆", 48, 120, 6, 10, 2, 10);
     zhengyuan.CONUP = 12;
     zhengyuan.STRUP = 8;
     zhengyuan.skills = [
-        { x: 40, y: 1000, name: "<碾压>", image: "Skill_1_png", inf: "普通攻击，命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
-        { x: 170, y: 1000, name: "<飞盘>", image: "Skill_1_png", inf: "正圆自身的投影攻击远程攻击，命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
-        { x: 290 + 6, y: 1000, name: "<翻滚>", image: "Skill_1_png", inf: "直线大幅度移动，回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
-        { x: 420 + 4, y: 1000, name: "<圆滑化>", image: "Skill_1_png", inf: "正圆变得更加圆润光滑，按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
-        { x: 550 + 2, y: 1000, name: "<正圆移动>", image: "Skill_1_png", inf: "上下左右一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
+        { x: 40, y: 1000, name: "<碾压>", image: "Skill_1_png", inf: "普通的攻击\n命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
+        { x: 170, y: 1000, name: "<飞盘>", image: "Skill_1_png", inf: "正圆自身的\n投影远程攻击\n命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
+        { x: 290 + 6, y: 1000, name: "<翻滚>", image: "Skill_1_png", inf: "直线大幅度移动\n回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
+        { x: 420 + 4, y: 1000, name: "<圆滑化>", image: "Skill_1_png", inf: "正圆变得\n更加圆润光滑\n按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
+        { x: 550 + 2, y: 1000, name: "<正圆移动>", image: "Skill_1_png", inf: "上下左右\n一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
     ];
     return zhengyuan;
 }

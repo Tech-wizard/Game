@@ -64,19 +64,30 @@ var GameScene = (function () {
             this.ticker = function () {
                 playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE);
                 playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE);
-                GameScene.getCurrentScene().player._body.x += 3 * (current.x - playerX);
-                GameScene.getCurrentScene().player._body.y += 3 * (current.y - playerY);
+                // if (current.x - playerX > 0) {
+                //     var tempX: number = 1;
+                // }
+                // if (current.x - playerX < 0) {
+                //     var tempX: number = -1;
+                // }
+                // if (current.y - playerY > 0) {
+                //     var tempY: number = 1;
+                // }
+                // if (current.y - playerY < 0) {
+                //     var tempY: number = -1;
+                // }
+                GameScene.getCurrentScene().player._body.x += TileMap.TILE_SPEED * (current.x - playerX);
+                GameScene.getCurrentScene().player._body.y += TileMap.TILE_SPEED * (current.y - playerY);
                 //  GameScene.getCurrentScene().player._body.x += 3 * (current.x - playerX);
                 // GameScene.getCurrentScene().player._body.y += 3 * (current.y - playerY);
                 if (playerX == current.x && playerY == current.y) {
-                    var tween = egret.Tween.get(null, 300);
-                    tween.pause();
+                    // var tween = egret.Tween.get(GameScene.getCurrentScene().player._body);
+                    // tween.to ( {x:current.x * TileMap.TILE_SIZE,y:current.y * TileMap.TILE_SIZE}, 100 );
                     GameScene.getCurrentScene().player._body.x = current.x * TileMap.TILE_SIZE;
                     GameScene.getCurrentScene().player._body.y = current.y * TileMap.TILE_SIZE;
                     if (astar._path.length == 0) {
                         console.log("寻路完毕");
                         egret.Ticker.getInstance().unregister(_this.ticker, _this);
-                        // egret.setTimeout(function () {
                         console.log("结束移动");
                         callback();
                     }
@@ -205,9 +216,11 @@ var UIScene = (function () {
         }, this);
         start.touchEnabled = true;
         start.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-            GameScene.getCurrentScene().main.removeChildren();
-            //BlackMask.alpha = 0;
-            //WhiteMask.alpha = 1;
+            GameScene.getCurrentScene().main.removeChild(start);
+            GameScene.getCurrentScene().main.removeChild(material);
+            GameScene.getCurrentScene().main.removeChild(about);
+            GameScene.getCurrentScene().main.removeChild(Title);
+            GameScene.getCurrentScene().main.removeChild(back);
             UIScene.getCurrentScene().showPick();
         }, this);
     };
@@ -343,6 +356,20 @@ var UIScene = (function () {
         }, this);
     };
     p.gamestart = function () {
+        var equipmentButtun = new egret.TextField();
+        equipmentButtun.text = "状态";
+        equipmentButtun.size = 40;
+        equipmentButtun.x = 280;
+        equipmentButtun.y = 1000;
+        GameScene.getCurrentScene().main.addChild(equipmentButtun);
+        equipmentButtun.touchEnabled = true;
+        equipmentButtun.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+            if (PropertyPanel.flag == 0) {
+                console.log(PropertyPanel.flag);
+                var pp = new PropertyPanel(UIScene.getCurrentScene().hero);
+                GameScene.getCurrentScene().main.addChild(pp);
+            }
+        }, this);
         var Dpanel_1 = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了，去找还有希望被拯救的形状吧");
         var Dpanel_2 = new DialoguePanel("我还有救，但变得不规则好像也没什么不好，先跟我较量看看吧");
         this.dp1 = Dpanel_1;
@@ -381,6 +408,7 @@ var UIScene = (function () {
         //var scenceService:SceneService = new SceneService();
         //SceneService.getInstance().addObserver(monster_1);
         SceneService.getInstance().addObserver(task_1.condition);
+        this.item = new Item("五角星型残骸", "star_png", 5, TileMap.TILE_SIZE * 11, TileMap.TILE_SIZE * 0);
         var player = new Player(this.ad);
         GameScene.getCurrentScene().player = player;
         var map = new TileMap(GameScene.getCurrentScene().player);
@@ -392,6 +420,7 @@ var UIScene = (function () {
         GameScene.getCurrentScene().main.addChild(NPC_2);
         GameScene.getCurrentScene().main.addChild(this.dp1);
         GameScene.getCurrentScene().main.addChild(this.dp2);
+        GameScene.getCurrentScene().main.addChild(this.item);
     };
     p.gamebadend = function () {
         var no = new egret.Bitmap();
@@ -399,6 +428,17 @@ var UIScene = (function () {
         no.width = 640;
         no.height = 1134;
         GameScene.getCurrentScene().main.addChild(no);
+        var back = new egret.TextField();
+        back.text = "返回主菜单";
+        back.size = 30;
+        back.touchEnabled = true;
+        back.y = 900;
+        back.x = 250;
+        GameScene.getCurrentScene().main.addChild(back);
+        back.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+            GameScene.getCurrentScene().main.removeChildren();
+            UIScene.getCurrentScene().gameMenu();
+        }, this);
     };
     p.gamehappyend = function () {
         var blackback = new egret.Shape();
@@ -412,12 +452,23 @@ var UIScene = (function () {
         win.textColor = 0xffffff;
         win.width = 640 - 172;
         win.textAlign = "center";
-        win.text = "您已通关";
-        win.size = 80;
+        win.text = "纯形战士战胜了不规则几何体，但战斗仍将继续！";
+        win.size = 50;
         win.fontFamily = '黑体';
         win.x = 100;
-        win.y = 100;
+        win.y = 300;
         GameScene.getCurrentScene().main.addChild(win);
+        var back = new egret.TextField();
+        back.text = "返回主菜单";
+        back.size = 30;
+        back.touchEnabled = true;
+        back.y = 900;
+        back.x = 250;
+        GameScene.getCurrentScene().main.addChild(back);
+        back.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+            GameScene.getCurrentScene().main.removeChildren();
+            UIScene.getCurrentScene().gameMenu();
+        }, this);
     };
     return UIScene;
 }());

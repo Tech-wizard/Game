@@ -119,6 +119,35 @@ class TalkCommand implements Command {
     }
 }
 
+
+class EquipCommand implements Command {
+   
+    private name:string;
+    item:Equipment;
+    ad:string;
+    atk:number;
+    constructor(name:string,ad:string,atk:number) {
+        this.name = name;
+        this.ad = ad;
+        this.atk = atk;
+    }
+
+    execute(callback: Function): void {
+        var ruen_1: rune[] = [new rune(2), new rune(3)];
+        this.item = new Equipment(this.name, this.ad, 1, this.atk, ruen_1);
+        UIScene.getCurrentScene().hero.equip(this.item);
+        GameScene.getCurrentScene().main.removeChild(UIScene.getCurrentScene().item);
+        callback();
+        
+    }
+
+    cancel(callback: Function) {
+       
+            callback();
+        
+    }
+}
+
 class CommandList {
 
     private _list: Command[] = [];

@@ -95,6 +95,26 @@ var TalkCommand = (function () {
     return TalkCommand;
 }());
 egret.registerClass(TalkCommand,'TalkCommand',["Command"]);
+var EquipCommand = (function () {
+    function EquipCommand(name, ad, atk) {
+        this.name = name;
+        this.ad = ad;
+        this.atk = atk;
+    }
+    var d = __define,c=EquipCommand,p=c.prototype;
+    p.execute = function (callback) {
+        var ruen_1 = [new rune(2), new rune(3)];
+        this.item = new Equipment(this.name, this.ad, 1, this.atk, ruen_1);
+        UIScene.getCurrentScene().hero.equip(this.item);
+        GameScene.getCurrentScene().main.removeChild(UIScene.getCurrentScene().item);
+        callback();
+    };
+    p.cancel = function (callback) {
+        callback();
+    };
+    return EquipCommand;
+}());
+egret.registerClass(EquipCommand,'EquipCommand',["Command"]);
 var CommandList = (function () {
     function CommandList() {
         this._list = [];

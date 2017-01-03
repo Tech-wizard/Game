@@ -92,6 +92,7 @@ var TileMap = (function (_super) {
     };
     TileMap.TILE_SIZE = 53;
     TileMap.TILE_BATTLE_SIZE = 80;
+    TileMap.TILE_SPEED = 4;
     return TileMap;
 }(egret.DisplayObjectContainer));
 egret.registerClass(TileMap,'TileMap');

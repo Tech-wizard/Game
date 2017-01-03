@@ -152,7 +152,7 @@ class Battle extends egret.DisplayObjectContainer {
             else{
             this.enemyturn();
             }
-        }, this, 1200);
+        }, this, 1000);
 
 
     }
@@ -508,6 +508,9 @@ class Battle extends egret.DisplayObjectContainer {
         if (this.hero.curMP.value >= skill.MPneed) {
             this.chance--;
             this.hero.curMP.value -= skill.MPneed;
+            if(this.hero.curMP.value>this.hero._maxMP.value){
+                this.hero.curMP.value = this.hero._maxMP.value;
+            }
             switch (skill.type) {
 
                 case SkillType.speedbuff:

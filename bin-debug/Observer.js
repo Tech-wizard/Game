@@ -1,3 +1,37 @@
+var Item = (function (_super) {
+    __extends(Item, _super);
+    function Item(name, ad, atk, x, y) {
+        var _this = this;
+        _super.call(this);
+        this._body = new egret.Bitmap();
+        this._body.texture = RES.getRes(ad);
+        this._body.width = TileMap.TILE_SIZE;
+        this._body.height = TileMap.TILE_SIZE;
+        this.name = name;
+        this.ad = ad;
+        this.atk = atk;
+        this._body.x = x;
+        this._body.y = y;
+        this.addChild(this._body);
+        this.touchEnabled = true;
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+            _this.onItemClick();
+        }, this);
+    }
+    var d = __define,c=Item,p=c.prototype;
+    p.onChange = function () {
+    };
+    p.onItemClick = function () {
+        if (SceneService.getInstance().list, length != 0) {
+            SceneService.getInstance().list.cancel();
+        }
+        SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this._body.x / TileMap.TILE_SIZE), Math.floor(this._body.y / TileMap.TILE_SIZE)));
+        SceneService.getInstance().list.addCommand(new EquipCommand(this.name, this.ad, this.atk));
+        SceneService.getInstance().list.execute();
+    };
+    return Item;
+}(egret.DisplayObjectContainer));
+egret.registerClass(Item,'Item',["Observer"]);
 var NPC = (function (_super) {
     __extends(NPC, _super);
     //public NPCTalk:string;
@@ -61,13 +95,7 @@ var NPC = (function (_super) {
         }
         SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this.x / TileMap.TILE_SIZE), Math.floor(this.y / TileMap.TILE_SIZE)));
         SceneService.getInstance().list.addCommand(new TalkCommand(this.id));
-        //&& TaskService.getInstance().taskList["001"] == TaskStatus.DURING
-        if (this.id == "NPC_2") {
-            SceneService.getInstance().list.addCommand(new FightCommand("npc_2_png"));
-        }
         SceneService.getInstance().list.execute();
-        //this.dialoguePanel.showDpanel();
-        //TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
     };
     return NPC;
 }(egret.DisplayObjectContainer));
@@ -196,6 +224,13 @@ var DialoguePanel = (function (_super) {
                 break;
             default:
                 break;
+        }
+        if (this.linkNPC.id == "NPC_2") {
+            if (SceneService.getInstance().list, length != 0) {
+                SceneService.getInstance().list.cancel();
+            }
+            SceneService.getInstance().list.addCommand(new FightCommand("npc_2_png"));
+            SceneService.getInstance().list.execute();
         }
     };
     return DialoguePanel;

@@ -2,6 +2,49 @@ interface Observer {
     onChange(task: Task): void;
 }
 
+class Item extends egret.DisplayObjectContainer implements Observer {
+
+    public _body: egret.Bitmap;
+    public ad: string;
+    itemName: string;
+    item: Equipment;
+    atk: number;
+    name: string;
+    constructor(name: string, ad: string, atk: number, x: number, y: number) {
+
+        super();
+        this._body = new egret.Bitmap();
+        this._body.texture = RES.getRes(ad);
+        this._body.width = TileMap.TILE_SIZE;
+        this._body.height = TileMap.TILE_SIZE;
+        this.name = name;
+        this.ad = ad;
+        this.atk = atk;
+        this._body.x = x;
+        this._body.y = y;
+        this.addChild(this._body);
+        this.touchEnabled = true;
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+            this.onItemClick();
+        }, this);
+
+    }
+    onChange() {
+
+    }
+
+    onItemClick() {
+
+        if (SceneService.getInstance().list, length != 0) {
+            SceneService.getInstance().list.cancel();
+        }
+        SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this._body.x / TileMap.TILE_SIZE), Math.floor(this._body.y / TileMap.TILE_SIZE)));
+        SceneService.getInstance().list.addCommand(new EquipCommand(this.name, this.ad, this.atk));
+        SceneService.getInstance().list.execute();
+
+    }
+}
+
 class NPC extends egret.DisplayObjectContainer implements Observer {
     public _emoji: egret.Bitmap;
     public _body: egret.Bitmap;
@@ -70,19 +113,14 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     }
 
     onNPCClick() {
-        if (SceneService.getInstance().list,length!=0) {
+        if (SceneService.getInstance().list, length != 0) {
             SceneService.getInstance().list.cancel();
         }
         SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this.x / TileMap.TILE_SIZE), Math.floor(this.y / TileMap.TILE_SIZE)));
         SceneService.getInstance().list.addCommand(new TalkCommand(this.id));
-//&& TaskService.getInstance().taskList["001"] == TaskStatus.DURING
-        if (this.id == "NPC_2" ) {
-            SceneService.getInstance().list.addCommand(new FightCommand("npc_2_png"));
-        }
         SceneService.getInstance().list.execute();
 
-        //this.dialoguePanel.showDpanel();
-        //TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
+
 
     }
 }
@@ -210,21 +248,23 @@ class DialoguePanel extends egret.DisplayObjectContainer {
 
     onButtonClick() {
 
+
+
         this.disshowDpanel();
         switch (this.currentTask.status) {
             case TaskStatus.ACCEPTABLE:
 
                 TaskService.getInstance().accept(this.currentTask.id);
-         if(this.currentTask.id=="000"){
-             TaskService.getInstance().finish(this.currentTask.id);
-             if (TaskService.getInstance().getNextTask() != null)
-                { TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE; }
+                if (this.currentTask.id == "000") {
+                    TaskService.getInstance().finish(this.currentTask.id);
+                    if (TaskService.getInstance().getNextTask() != null)
+                    { TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE; }
 
-                if (TaskService.getInstance().getTaskByCustomRule() != null) {
-                    this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
-                    TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
+                    if (TaskService.getInstance().getTaskByCustomRule() != null) {
+                        this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
+                        TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
+                    }
                 }
-         }
                 break;
             case TaskStatus.CAN_SUBMIT:
 
@@ -242,6 +282,13 @@ class DialoguePanel extends egret.DisplayObjectContainer {
             default:
                 break;
 
+        }
+        if (this.linkNPC.id == "NPC_2") {
+            if (SceneService.getInstance().list, length != 0) {
+                SceneService.getInstance().list.cancel();
+            }
+            SceneService.getInstance().list.addCommand(new FightCommand("npc_2_png"));
+            SceneService.getInstance().list.execute();
         }
 
     }

@@ -3,6 +3,7 @@ class TileMap extends egret.DisplayObjectContainer {
 
     public static TILE_SIZE: number = 53;
     public static TILE_BATTLE_SIZE: number = 80;
+    public static TILE_SPEED: number = 4;
 
     _player: Player;
     _speed: number = 3;
@@ -83,31 +84,31 @@ class TileMap extends egret.DisplayObjectContainer {
 
 
             //     egret.Ticker.getInstance().register(ticker, this);
-                 if (SceneService.getInstance().list.length!=0) {
+            if (SceneService.getInstance().list.length != 0) {
                 SceneService.getInstance().list.cancel();
-                }
-                SceneService.getInstance().list.addCommand(new WalkCommand(gridX,gridY));
-                SceneService.getInstance().list.execute();
+            }
+            SceneService.getInstance().list.addCommand(new WalkCommand(gridX, gridY));
+            SceneService.getInstance().list.execute();
 
-                // &&
-                //                      this._player._body.x <= current.x * TileMap.TILE_SIZE + this._speed &&
-                //                       this._player._body.x >= current.x * TileMap.TILE_SIZE - this._speed &&
-                //                       this._player._body.y <= current.y * TileMap.TILE_SIZE + this._speed &&
-                //                       this._player._body.y >= current.y * TileMap.TILE_SIZE - this._speed)
+            // &&
+            //                      this._player._body.x <= current.x * TileMap.TILE_SIZE + this._speed &&
+            //                       this._player._body.x >= current.x * TileMap.TILE_SIZE - this._speed &&
+            //                       this._player._body.y <= current.y * TileMap.TILE_SIZE + this._speed &&
+            //                       this._player._body.y >= current.y * TileMap.TILE_SIZE - this._speed)
 
 
-                // this._i = 1;
-                // this.moveX[this._i] = this._astar._path[this._i].x * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
-                // this.moveY[this._i] = this._astar._path[this._i].y * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
-                // this._player.move(this.moveX[this._i], this.moveY[this._i]);
-                // egret.Tween.get(this._player._body).to({ x: this.moveX[this._i], y: this.moveY[this._i] }, 600).wait(10).call(function () { this._player.idle() }, this);
+            // this._i = 1;
+            // this.moveX[this._i] = this._astar._path[this._i].x * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
+            // this.moveY[this._i] = this._astar._path[this._i].y * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
+            // this._player.move(this.moveX[this._i], this.moveY[this._i]);
+            // egret.Tween.get(this._player._body).to({ x: this.moveX[this._i], y: this.moveY[this._i] }, 600).wait(10).call(function () { this._player.idle() }, this);
 
-                // var timer: egret.Timer = new egret.Timer(1000, this._astar._path.length - 2);
-                // //注册事件侦听器
-                // timer.addEventListener(egret.TimerEvent.TIMER, this.timerFunc, this);
-                // timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.timerComFunc, this);
-                // //开始计时
-                // timer.start();
+            // var timer: egret.Timer = new egret.Timer(1000, this._astar._path.length - 2);
+            // //注册事件侦听器
+            // timer.addEventListener(egret.TimerEvent.TIMER, this.timerFunc, this);
+            // timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.timerComFunc, this);
+            // //开始计时
+            // timer.start();
             //}
         }, this);
 

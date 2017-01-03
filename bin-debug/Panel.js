@@ -46,13 +46,14 @@ var PropertyPanel = (function (_super) {
         this.tfweaponSPD = new egret.TextField();
         this.tfweaponATK = new egret.TextField();
         this.body = new egret.Shape();
-        this.body.graphics.beginFill(0x000000, 0.5);
-        this.body.graphics.drawRect(0, 0, 600, 800);
+        this.body.touchEnabled = true;
+        this.body.graphics.beginFill(0x000000, 0.4);
+        this.body.graphics.drawRect(0, 0, 640, 400);
         this.body.graphics.endFill();
-        this.closeButton = new Button("close_jpg");
-        this.weaponButton = new Button("weapon_jpg");
-        this.closeButton.body.width = 30;
-        this.closeButton.body.height = 30;
+        this.closeButton = new Button("close_png");
+        this.weaponButton = new Button("block2_png");
+        this.closeButton.body.width = 60;
+        this.closeButton.body.height = 60;
         this.closeButton.body.x = 570;
         this.weaponButton.body.width = 60;
         this.weaponButton.body.height = 60;
@@ -95,6 +96,10 @@ var PropertyPanel = (function (_super) {
     }
     var d = __define,c=PropertyPanel,p=c.prototype;
     p.Update = function () {
+        this.hero.heroInformationUpdate();
+        if (this.hero.equipments.length != 0) {
+            this.weaponButton.body.texture = RES.getRes(this.hero.equipments[0].ad);
+        }
         this.tfname.text = this.hero.name;
         this.tfHP.text = "HP： " + this.hero.curHP.value + "/" + this.hero._maxHP.value;
         this.tfATK.text = this.hero._ATK.getDescription();
@@ -110,8 +115,10 @@ var PropertyPanel = (function (_super) {
         this.tfSTR.text = this.hero.STR.getDescription();
     };
     p.showWeaponpanel = function () {
-        if (this.weaponflag == false) {
+        if (this.weaponflag == false && this.hero.equipments.length != 0) {
+            this.Update();
             this.weaponbody = new egret.Shape();
+            this.weaponbody.touchEnabled = true;
             this.weaponbody.graphics.beginFill(0x000000, 0.6);
             this.weaponbody.graphics.drawRect(0, 0, 300, 240);
             this.weaponbody.graphics.endFill();
@@ -126,19 +133,19 @@ var PropertyPanel = (function (_super) {
             this.tfweaponname.text = this.hero.equipments[0].name;
             this.tfweaponname.x = 20;
             this.tfweaponname.y = 30;
-            this.tfweaponATK.text = "武器攻击：" + this.hero.equipments[0]._attack;
+            this.tfweaponATK.text = "附加伤害：" + this.hero.equipments[0]._attack;
             this.tfweaponATK.x = 20;
             this.tfweaponATK.y = 55;
-            this.tfweaponSTR.text = "附加力量：" + this.hero.equipments[0].STR;
+            this.tfweaponSTR.text = "附加形状：" + this.hero.equipments[0].STR;
             this.tfweaponSTR.x = 20;
             this.tfweaponSTR.y = 80;
-            this.tfweaponCON.text = "附加体力：" + this.hero.equipments[0].CON;
+            this.tfweaponCON.text = "附加面积：" + this.hero.equipments[0].CON;
             this.tfweaponCON.x = 20;
             this.tfweaponCON.y = 105;
-            this.tfweaponMAG.text = "附加魔力：" + this.hero.equipments[0].MAG;
+            this.tfweaponMAG.text = "附加抽象：" + this.hero.equipments[0].MAG;
             this.tfweaponMAG.x = 20;
             this.tfweaponMAG.y = 130;
-            this.tfweaponDEX.text = "附加技巧：" + this.hero.equipments[0].DEX;
+            this.tfweaponDEX.text = "附加稳定：" + this.hero.equipments[0].DEX;
             this.tfweaponDEX.x = 20;
             this.tfweaponDEX.y = 155;
             this.tfweaponSPD.text = "附加速度：" + this.hero.equipments[0].SPD;
@@ -147,7 +154,9 @@ var PropertyPanel = (function (_super) {
             this.weaponflag = true;
         }
         else {
-            this.disshowWeaponpanel();
+            if (this.weaponflag == true && this.hero.equipments.length != 0) {
+                this.disshowWeaponpanel();
+            }
         }
     };
     p.disshowWeaponpanel = function () {
@@ -161,6 +170,7 @@ var PropertyPanel = (function (_super) {
         this.removeChild(this.weaponbody);
     };
     p.showDpanel = function () {
+        PropertyPanel.flag = 1;
         this.addChild(this.tfname);
         this.addChild(this.tfATK);
         this.addChild(this.tfCON);
@@ -176,6 +186,7 @@ var PropertyPanel = (function (_super) {
         this.addChild(this.tfSTR);
     };
     p.disshowDpanel = function () {
+        PropertyPanel.flag = 0;
         this.removeChild(this.tfname);
         this.removeChild(this.body);
         this.removeChild(this.closeButton);
@@ -193,6 +204,7 @@ var PropertyPanel = (function (_super) {
         this.removeChild(this.tfSPD);
         this.removeChild(this.tfSTR);
     };
+    PropertyPanel.flag = 0;
     return PropertyPanel;
 }(egret.DisplayObjectContainer));
 egret.registerClass(PropertyPanel,'PropertyPanel');
