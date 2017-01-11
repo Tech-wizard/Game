@@ -35,6 +35,7 @@ class LoadingUI extends egret.Sprite {
     }
 
     private textField:egret.TextField;
+    private loadmap:egret.Bitmap = new egret.Bitmap();
 
     private createView():void {
         this.textField = new egret.TextField();
@@ -43,6 +44,10 @@ class LoadingUI extends egret.Sprite {
         this.textField.width = 480;
         this.textField.height = 100;
         this.textField.textAlign = "center";
+        this.loadmap.texture = RES.getRes("preloading_gif");
+        this.addChild(this.loadmap);
+        this.loadmap.width = 640;
+        this.loadmap.height = 1136;
     }
 
     public setProgress(current:number, total:number):void {

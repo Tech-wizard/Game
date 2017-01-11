@@ -329,44 +329,44 @@ class rune {
 }
 
 
-function SetTriangle(): Hero {
-    var sanjiao = new Hero("三角", 47, 77, 10, 10, 2, 7);
+function SetTriangle(lv:number): Hero {
+    var sanjiao = new Hero("三角", 47+7*lv, 77+7*lv, 10, 10, 2, 7);
     sanjiao.CONUP = 7;
     sanjiao.STRUP = 7;
     sanjiao.skills = [
         { x: 40, y: 1000, name: "<射击>", image: "Skill_1_png", inf: "普通的\n远程攻击", ratio: 100, MPneed: 5, distance: 2, type: 0, num: 1 },
         { x: 170-2, y: 1000, name: "<轰击>", image: "Skill_1_png", inf: "聚集锋芒的\n重型远程攻击", ratio: 350, MPneed: 70, distance: 3, type: 0, num: 1 },
         { x: 300-4, y: 1000, name: "<划击>", image: "Skill_1_png", inf: "不擅长的\n近战攻击", ratio: 80, MPneed: 0, distance: 1, type: 0, num: 1 },
-        { x: 430-6, y: 1000, name: "<尖锐化>", image: "Skill_1_png", inf: "三角高速旋转\n本次战斗中\n永久提升速度", ratio: 100, MPneed: 100, distance: 0, type: 1, num: 1 },
+        { x: 430-6, y: 1000, name: "<尖锐化>", image: "Skill_1_png", inf: "三角高速旋转\n本次战斗中\n永久提升速度", ratio: 100, MPneed: 100, distance: 0, type: SkillType.speedbuff, num: 1 },
         { x: 560-8, y: 1000, name: "<三角移动>", image: "Skill_1_png", inf: "移动一格\n并回复10MP", ratio: 0, MPneed: -10, distance: 1, type: 4, num: 1 },
 
     ];
     return sanjiao;
 }
 
-function SetSquare(): Hero {
-    var fangkuai = new Hero("方块", 50, 100, 8, 10, 2, 10);
+function SetSquare(lv:number): Hero {
+    var fangkuai = new Hero("方块", 50+10*lv, 100+10*lv, 8, 10, 2, 10);
     fangkuai.CONUP = 10;
     fangkuai.STRUP = 10;
     fangkuai.skills = [
         { x: 40, y: 1000, name: "<棱刮>", image: "Skill_1_png", inf: "普通的\n近战攻击", ratio: 100, MPneed: 0, distance: 1, type: 0, num: 2 },
         { x: 170, y: 1000, name: "<格式打击>", image: "Skill_1_png", inf: "猛扑的\n对敌人造成重创", ratio: 250, MPneed: 50, distance: 1, type: 0, num: 2 },
-        { x: 290+6, y: 1000, name: "<空格>", image: "Skill_1_png", inf: "向所指方向\n跳跃一格\n并撞击敌人", ratio: 125, MPneed: 30, distance: 2, type: 6, num: 2 },
-        { x: 420+4, y: 1000, name: "<栅格化>", image: "Skill_1_png", inf: "方块变得\n更方了\n本次战斗中\n永久提升攻击力", ratio: 150, MPneed: 5, distance: 2, type: 0, num: 2 },
+        { x: 290+6, y: 1000, name: "<空格>", image: "Skill_1_png", inf: "向所指方向\n跳跃一格\n并撞击敌人", ratio: 125, MPneed: 30, distance: 2, type: SkillType.jump, num: 2 },
+        { x: 420+4, y: 1000, name: "<栅格化>", image: "Skill_1_png", inf: "方块更方了\n本次战斗中\n永久提升攻击力", ratio: 150, MPneed: 100, distance: 2, type: SkillType.speedbuff, num: 2 },
         { x: 550+2, y: 1000, name: "<方块移动>", image: "Skill_1_png", inf: "上下左右\n一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 2 }
     ]
     return fangkuai;
 }
 
-function SetCircle(): Hero {
-    var zhengyuan = new Hero("正圆", 48, 120, 6, 10, 2, 10);
+function SetCircle(lv:number): Hero {
+    var zhengyuan = new Hero("正圆", 42+8*lv, 120+12*lv, 6, 10, 2, 10);
     zhengyuan.CONUP = 12;
     zhengyuan.STRUP = 8;
     zhengyuan.skills = [
-        { x: 40, y: 1000, name: "<碾压>", image: "Skill_1_png", inf: "普通的攻击\n命中后回复8MP", ratio: 125, MPneed: -8, distance: 1, type: 0, num: 3 },
-        { x: 170, y: 1000, name: "<飞盘>", image: "Skill_1_png", inf: "正圆自身的\n投影远程攻击\n命中后回复5MP", ratio: 100, MPneed: -5, distance: 2, type: 0, num: 3 },
-        { x: 290+6, y: 1000, name: "<翻滚>", image: "Skill_1_png", inf: "直线大幅度移动\n回复2MP", ratio: 0, MPneed: 5, distance: 5, type: 5, num: 3 },
-        { x: 420+4, y: 1000, name: "<圆滑化>", image: "Skill_1_png", inf: "正圆变得\n更加圆润光滑\n按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: 0, num: 3 },
+        { x: 40, y: 1000, name: "<碾压>", image: "Skill_1_png", inf: "普通的攻击\n命中后回复8MP", ratio: 100, MPneed: -8, distance: 1, type: 0, num: 3 },
+        { x: 170, y: 1000, name: "<飞盘>", image: "Skill_1_png", inf: "正圆自身的\n投影远程攻击\n命中后回复5MP", ratio: 80, MPneed: -5, distance: 2, type: 0, num: 3 },
+        { x: 290+6, y: 1000, name: "<翻滚>", image: "Skill_1_png", inf: "直线大幅度移动\n回复2MP", ratio: 0, MPneed: -2, distance: 5, type: SkillType.roll, num: 3 },
+        { x: 420+4, y: 1000, name: "<圆滑化>", image: "Skill_1_png", inf: "正圆变得\n更加圆润光滑\n按当前比例增长HP", ratio: 150, MPneed: 100, distance: 2, type: SkillType.HPbuff, num: 3 },
         { x: 550+2, y: 1000, name: "<正圆移动>", image: "Skill_1_png", inf: "上下左右\n一格的范围", ratio: 0, MPneed: 0, distance: 1, type: 4, num: 3 },
     ];
     return zhengyuan;

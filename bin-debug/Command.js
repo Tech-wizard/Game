@@ -24,6 +24,7 @@ var FightCommand = (function () {
     }
     var d = __define,c=FightCommand,p=c.prototype;
     p.execute = function (callback) {
+        var _this = this;
         console.log("开始战斗");
         console.log(UIScene.getCurrentScene().hero);
         var battle = new Battle(UIScene.getCurrentScene().hero, 1, this.enemyad, 6, 6);
@@ -39,18 +40,25 @@ var FightCommand = (function () {
         //     }, this, 500)
         var batteEnd = egret.setInterval(function () {
             if (battle.judgeEnemyDeath() == true) {
-                console.log("敌人死亡，结束战斗");
+                console.log("敌人死亡,结束战斗,升级变强");
+                UIScene.getCurrentScene().NPC_2.fighted = true;
+                UIScene.getCurrentScene().hero.level++;
+                UIScene.getCurrentScene().hero.CON.value += UIScene.getCurrentScene().hero.CONUP;
+                UIScene.getCurrentScene().hero.CON.value += UIScene.getCurrentScene().hero.CONUP;
                 callback();
                 GameScene.getCurrentScene().main.removeChildren();
-                UIScene.getCurrentScene().gamehappyend();
                 egret.clearInterval(batteEnd);
+                if (_this.enemyad == "npc_2_png") {
+                    SceneService.getInstance().notify(TaskService.getInstance().taskList["001"]);
+                }
+                UIScene.getCurrentScene().gameContinue();
             }
             if (battle.judgeHeroDeath() == true) {
                 console.log("英雄阵亡，结束战斗");
                 callback();
                 GameScene.getCurrentScene().main.removeChildren();
-                UIScene.getCurrentScene().gamebadend();
                 egret.clearInterval(batteEnd);
+                UIScene.getCurrentScene().gamebadend();
             }
         }, this, 500);
     };
@@ -80,7 +88,7 @@ var TalkCommand = (function () {
         egret.setTimeout(function () {
             console.log("结束对话");
             callback();
-        }, this, 2000);
+        }, this, 500);
     };
     p.cancel = function (callback) {
         if (this.npcid == "NPC_1") {

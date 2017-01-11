@@ -122,8 +122,7 @@ class Main extends egret.DisplayObjectContainer {
         GameScene.replaceScene(scene);
         GameScene.getCurrentScene().main = this;
          var pickscene = new UIScene();
-        UIScene.replaceScene(pickscene);
-
+       UIScene.replaceScene(pickscene);
        UIScene.getCurrentScene().gameMenu();
        
 

@@ -10,8 +10,8 @@ var Item = (function (_super) {
         this.name = name;
         this.ad = ad;
         this.atk = atk;
-        this._body.x = x;
-        this._body.y = y;
+        this.x = x;
+        this.y = y;
         this.addChild(this._body);
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
@@ -25,7 +25,7 @@ var Item = (function (_super) {
         if (SceneService.getInstance().list, length != 0) {
             SceneService.getInstance().list.cancel();
         }
-        SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this._body.x / TileMap.TILE_SIZE), Math.floor(this._body.y / TileMap.TILE_SIZE)));
+        SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this.x / TileMap.TILE_SIZE), Math.floor(this.y / TileMap.TILE_SIZE)));
         SceneService.getInstance().list.addCommand(new EquipCommand(this.name, this.ad, this.atk));
         SceneService.getInstance().list.execute();
     };
@@ -36,11 +36,12 @@ var NPC = (function (_super) {
     __extends(NPC, _super);
     //public NPCTalk:string;
     // public task:Task;
-    function NPC(id, ad, x, y, dp) {
+    function NPC(id, ad, x, y, dia) {
         _super.call(this);
+        this.fighted = false;
+        this.dialoguePanel = dia;
         this._body = new egret.Bitmap();
         this._emoji = new egret.Bitmap();
-        this.dialoguePanel = dp;
         this._body.texture = RES.getRes(ad);
         this._emoji.texture = RES.getRes("notice_png");
         this._id = id;
@@ -59,42 +60,37 @@ var NPC = (function (_super) {
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onNPCClick, this);
     }
     var d = __define,c=NPC,p=c.prototype;
-    d(p, "id"
-        ,function () {
-            return this._id;
-        }
-    );
     p.onChange = function (task) {
-        if (task.status == TaskStatus.ACCEPTABLE && this.id == task.fromNpcId) {
-            //task.status = TaskStatus.DURING;
+        if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
             this._emoji.texture = RES.getRes("notice_png");
             this._emoji.alpha = 1;
         }
-        if (task.status == TaskStatus.DURING && this.id == task.fromNpcId) {
+        if (task.status == TaskStatus.DURING && this._id == task.fromNpcId) {
             this._emoji.alpha = 0;
         }
-        if (task.status == TaskStatus.DURING && this.id == task.toNpcId) {
+        if (task.status == TaskStatus.DURING && this._id == task.toNpcId) {
             this._emoji.texture = RES.getRes("question_png");
             this._emoji.alpha = 1;
         }
-        if (task.status == TaskStatus.CAN_SUBMIT && this.id == task.fromNpcId) {
-            //this._emoji.texture = RES.getRes("question_png");
+        if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.fromNpcId) {
+            this._emoji.texture = RES.getRes("question_png");
             this._emoji.alpha = 0;
         }
-        if (task.status == TaskStatus.CAN_SUBMIT && this.id == task.toNpcId) {
+        if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
             this._emoji.texture = RES.getRes("question_png");
             this._emoji.alpha = 1;
         }
-        if (task.status == TaskStatus.SUBMITED && this.id == task.toNpcId) {
+        if (task.status == TaskStatus.SUBMITED && this._id == task.toNpcId) {
             this._emoji.alpha = 0;
         }
     };
     p.onNPCClick = function () {
+        TaskService.getInstance().accept();
         if (SceneService.getInstance().list, length != 0) {
             SceneService.getInstance().list.cancel();
         }
         SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this.x / TileMap.TILE_SIZE), Math.floor(this.y / TileMap.TILE_SIZE)));
-        SceneService.getInstance().list.addCommand(new TalkCommand(this.id));
+        SceneService.getInstance().list.addCommand(new TalkCommand(this._id));
         SceneService.getInstance().list.execute();
     };
     return NPC;
@@ -120,7 +116,7 @@ var TaskPanel = (function (_super) {
         this.textField2.x = 0;
         this.textField2.y = 30;
         this.textField3 = new egret.TextField();
-        this.textField2.text = "   进度    ";
+        this.textField2.text = "      ";
         this.textField3.x = 0;
         this.textField3.y = 55;
         this.addChild(this.body);
@@ -130,6 +126,7 @@ var TaskPanel = (function (_super) {
     }
     var d = __define,c=TaskPanel,p=c.prototype;
     p.onChange = function (task) {
+        console.log(task);
         this.textField.text = task.desc;
         var tf;
         switch (task.status) {
@@ -150,7 +147,9 @@ var TaskPanel = (function (_super) {
                 break;
         }
         this.textField2.text = task.name + " :" + tf;
-        this.textField3.text = task.name + " :" + task.getcurrent() + "/" + task.total;
+        if (task.type == TaskType.Kill) {
+            this.textField3.text = task.name + " :" + task.getcurrent() + "/" + task.total;
+        }
     };
     return TaskPanel;
 }(egret.DisplayObjectContainer));
@@ -174,6 +173,7 @@ var DialoguePanel = (function (_super) {
         this.button.x = 500;
         this.button.y = 550;
         this.button.touchEnabled = true;
+        this.body.touchEnabled = true;
         this.button.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onButtonClick, this);
     }
     var d = __define,c=DialoguePanel,p=c.prototype;
@@ -184,10 +184,10 @@ var DialoguePanel = (function (_super) {
     };
     p.updateViewByTask = function (task) {
         this.currentTask = task;
-        if (task.id == "000" && this.linkNPC.id == "NPC_2") {
+        if (this.currentTask.id == "001" && this.linkNPC._id == "NPC_2") {
             this.textField.text = "变得不规则挺好的，哈哈哈，来跳舞吧！";
         }
-        else {
+        if (this.currentTask.status == TaskStatus.CAN_SUBMIT && this.currentTask.status == TaskStatus.SUBMITED) {
             this.textField.text = this.currentTask.NPCTaskTalk;
         }
     };
@@ -201,16 +201,17 @@ var DialoguePanel = (function (_super) {
         switch (this.currentTask.status) {
             case TaskStatus.ACCEPTABLE:
                 TaskService.getInstance().accept(this.currentTask.id);
-                if (this.currentTask.id == "000") {
-                    TaskService.getInstance().finish(this.currentTask.id);
-                    if (TaskService.getInstance().getNextTask() != null) {
-                        TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE;
-                    }
-                    if (TaskService.getInstance().getTaskByCustomRule() != null) {
-                        this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
-                        TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
-                    }
-                }
+                // if (this.currentTask.id == "000") {
+                //     TaskService.getInstance().finish(this.currentTask.id);
+                //     if (TaskService.getInstance().getNextTask() != null) {
+                //         TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE;
+                //         TaskService.getInstance().notify(TaskService.getInstance().getNextTask());
+                //     }
+                //     if (TaskService.getInstance().getTaskByCustomRule() != null) {
+                //         this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
+                //         TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
+                //     }
+                // }
                 break;
             case TaskStatus.CAN_SUBMIT:
                 TaskService.getInstance().finish(this.currentTask.id);
@@ -218,6 +219,7 @@ var DialoguePanel = (function (_super) {
                     TaskService.getInstance().getNextTask().status = TaskStatus.ACCEPTABLE;
                 }
                 if (TaskService.getInstance().getTaskByCustomRule() != null) {
+                    console.log(TaskService.getInstance().getTaskByCustomRule());
                     this.updateViewByTask(TaskService.getInstance().getTaskByCustomRule());
                     TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
                 }
@@ -225,49 +227,63 @@ var DialoguePanel = (function (_super) {
             default:
                 break;
         }
-        if (this.linkNPC.id == "NPC_2") {
+        if (this.linkNPC._id == "NPC_2" && this.linkNPC.fighted == false) {
             if (SceneService.getInstance().list, length != 0) {
                 SceneService.getInstance().list.cancel();
             }
             SceneService.getInstance().list.addCommand(new FightCommand("npc_2_png"));
             SceneService.getInstance().list.execute();
         }
+        else {
+            this.textField.text = "我投降";
+        }
     };
     return DialoguePanel;
 }(egret.DisplayObjectContainer));
 egret.registerClass(DialoguePanel,'DialoguePanel');
-var MockKillMonsterButton = (function (_super) {
-    __extends(MockKillMonsterButton, _super);
-    function MockKillMonsterButton(ad, linkTask) {
-        var _this = this;
-        _super.call(this, ad);
+var Monster = (function (_super) {
+    __extends(Monster, _super);
+    function Monster(ad, linkTask) {
+        _super.call(this);
         this.count = 0;
+        this.ad = ad;
+        this.body = new egret.Bitmap();
+        this.body.texture = RES.getRes(ad);
+        this.body.width = TileMap.TILE_SIZE;
+        this.body.height = TileMap.TILE_SIZE;
         this.linkTask = linkTask;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onButtonClick, this);
-        egret.Ticker.getInstance().register(function () {
-            if (_this.count < 5) {
-                _this.body.scaleY *= 1.05;
-            }
-            else if (_this.count < 10 || _this.count >= 5) {
-                _this.body.scaleY /= 1.05;
-            }
-            _this.count += 0.5;
-            if (_this.count >= 10) {
-                _this.count = 0;
-            }
-        }, this);
+        this.addChild(this.body);
+        // egret.Ticker.getInstance().register(() => {
+        //     if (this.count < 5) {
+        //         this.body.scaleY *= 1.01;
+        //     }
+        //     else if (this.count < 10 || this.count >= 5) {
+        //         this.body.scaleY /= 1.01;
+        //     }
+        //     this.count += 0.5;
+        //     if (this.count >= 10) {
+        //         this.count = 0;
+        //     }
+        // }, this);
     }
-    var d = __define,c=MockKillMonsterButton,p=c.prototype;
+    var d = __define,c=Monster,p=c.prototype;
     p.onButtonClick = function () {
-        if (TaskService.getInstance().taskList[this.linkTask].status == TaskStatus.DURING) {
-            //console.log(TaskService.getInstance().taskList[this.linkTask]);  神奇的bug，注释掉console下面这句就执行不了，有这行console.log 下面就能执行
-            //TaskService.getInstance().taskList[this.linkTask].condition.onChange(TaskService.getInstance().taskList[this.linkTask]);
-            SceneService.getInstance().notify(TaskService.getInstance().taskList[this.linkTask]);
+        if (SceneService.getInstance().list, length != 0) {
+            SceneService.getInstance().list.cancel();
         }
+        SceneService.getInstance().list.addCommand(new WalkCommand(Math.floor(this.x / TileMap.TILE_SIZE), Math.floor(this.y / TileMap.TILE_SIZE)));
+        SceneService.getInstance().list.addCommand(new FightCommand(this.ad));
+        SceneService.getInstance().list.execute();
     };
     p.onChange = function () {
+        if (this.linkTask != null) {
+            if (TaskService.getInstance().taskList[this.linkTask].status == TaskStatus.DURING) {
+                SceneService.getInstance().notify(TaskService.getInstance().taskList[this.linkTask]);
+            }
+        }
     };
-    return MockKillMonsterButton;
-}(Button));
-egret.registerClass(MockKillMonsterButton,'MockKillMonsterButton',["Observer"]);
+    return Monster;
+}(egret.DisplayObjectContainer));
+egret.registerClass(Monster,'Monster',["Observer"]);
 //# sourceMappingURL=Observer.js.map

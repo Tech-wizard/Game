@@ -53,20 +53,34 @@ class FightCommand implements Command {
         //     callback();
         // }
         //     }, this, 500)
-       var batteEnd =  egret.setInterval(() => {
+        var batteEnd = egret.setInterval(() => {
             if (battle.judgeEnemyDeath() == true) {
-                console.log("敌人死亡，结束战斗");
+                console.log("敌人死亡,结束战斗,升级变强");
+                UIScene.getCurrentScene().NPC_2.fighted = true;
+                UIScene.getCurrentScene().hero.level++;
+                UIScene.getCurrentScene().hero.CON.value += UIScene.getCurrentScene().hero.CONUP;
+                UIScene.getCurrentScene().hero.CON.value += UIScene.getCurrentScene().hero.CONUP;
+
                 callback();
+
                 GameScene.getCurrentScene().main.removeChildren();
-               UIScene.getCurrentScene().gamehappyend();
-               egret.clearInterval(batteEnd);
+                egret.clearInterval(batteEnd);
+                if (this.enemyad == "npc_2_png") {
+
+                    SceneService.getInstance().notify(TaskService.getInstance().taskList["001"]);
+
+                }
+
+                UIScene.getCurrentScene().gameContinue();
+
+
             }
             if (battle.judgeHeroDeath() == true) {
                 console.log("英雄阵亡，结束战斗");
                 callback();
                 GameScene.getCurrentScene().main.removeChildren();
-                UIScene.getCurrentScene().gamebadend();
                 egret.clearInterval(batteEnd);
+                UIScene.getCurrentScene().gamebadend();
             }
 
         }, this, 500);
@@ -104,7 +118,7 @@ class TalkCommand implements Command {
         egret.setTimeout(function () {
             console.log("结束对话");
             callback();
-        }, this, 2000);
+        }, this, 500);
     }
 
     cancel(callback: Function) {
@@ -121,12 +135,12 @@ class TalkCommand implements Command {
 
 
 class EquipCommand implements Command {
-   
-    private name:string;
-    item:Equipment;
-    ad:string;
-    atk:number;
-    constructor(name:string,ad:string,atk:number) {
+
+    private name: string;
+    item: Equipment;
+    ad: string;
+    atk: number;
+    constructor(name: string, ad: string, atk: number) {
         this.name = name;
         this.ad = ad;
         this.atk = atk;
@@ -138,13 +152,13 @@ class EquipCommand implements Command {
         UIScene.getCurrentScene().hero.equip(this.item);
         GameScene.getCurrentScene().main.removeChild(UIScene.getCurrentScene().item);
         callback();
-        
+
     }
 
     cancel(callback: Function) {
-       
-            callback();
-        
+
+        callback();
+
     }
 }
 

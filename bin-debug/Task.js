@@ -1,9 +1,10 @@
 var Task = (function () {
-    function Task(id, name, condition) {
+    function Task(id, name, condition, type) {
         this._current = 0;
         this._id = id;
         this._name = name;
         this._condition = condition;
+        this.type = type;
     }
     var d = __define,c=Task,p=c.prototype;
     p.checkStatus = function () {
@@ -63,6 +64,11 @@ var TaskStatus;
     TaskStatus[TaskStatus["CAN_SUBMIT"] = 3] = "CAN_SUBMIT";
     TaskStatus[TaskStatus["SUBMITED"] = 4] = "SUBMITED";
 })(TaskStatus || (TaskStatus = {}));
+var TaskType;
+(function (TaskType) {
+    TaskType[TaskType["Talk"] = 0] = "Talk";
+    TaskType[TaskType["Kill"] = 1] = "Kill";
+})(TaskType || (TaskType = {}));
 var KillMonsterTaskCondition = (function () {
     function KillMonsterTaskCondition() {
     }

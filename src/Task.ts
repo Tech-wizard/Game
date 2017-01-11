@@ -5,18 +5,19 @@ class Task implements TaskConditionContext {
     private _status: TaskStatus;
     private _current: number = 0;
     private _condition: TaskConditon;
-
+    public type:number;
     public fromNpcId: string;
     public toNpcId: string;
     public desc: string;
     public total: number;
     public NPCTaskTalk:string;
     
-    constructor(id: string, name: string, condition: TaskConditon) {
-
+    constructor(id: string, name: string, condition: TaskConditon,type:number) {
+      
         this._id = id;
         this._name = name;
         this._condition = condition;
+        this.type = type;
     }
 
     public checkStatus() {
@@ -84,6 +85,11 @@ enum TaskStatus {
     CAN_SUBMIT,
     SUBMITED
 
+}
+
+enum TaskType{
+    Talk,
+    Kill
 }
 
 interface TaskConditon {

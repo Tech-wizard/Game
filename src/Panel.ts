@@ -56,14 +56,16 @@ class PropertyPanel extends egret.DisplayObjectContainer {
         super();
         this.body = new egret.Shape();
         this.body.touchEnabled = true;
-        this.body.graphics.beginFill(0x000000, 0.4);
+        this.body.graphics.beginFill(0x000000, 0.6);
         this.body.graphics.drawRect(0, 0, 640, 400);
         this.body.graphics.endFill();
         this.closeButton = new Button("close_png");
         this.weaponButton = new Button("block2_png");
+        this.closeButton.body.alpha = 0.95;
         this.closeButton.body.width = 60;
         this.closeButton.body.height = 60;
         this.closeButton.body.x = 570;
+        this.closeButton.body.y = 340;
         this.weaponButton.body.width = 60;
         this.weaponButton.body.height = 60;
         this.weaponButton.body.x = 80;
@@ -72,7 +74,7 @@ class PropertyPanel extends egret.DisplayObjectContainer {
         this.closeButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.disshowDpanel, this);
 
         this.weaponButton.touchEnabled = true;
-        this.weaponButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.showWeaponpanel, this);
+        this.weaponButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.updateweaponpanel, this);
 
         this.addChild(this.body);
         this.addChild(this.closeButton);
@@ -131,65 +133,70 @@ class PropertyPanel extends egret.DisplayObjectContainer {
 
     }
 
-    showWeaponpanel() {
+ updateweaponpanel() {
         if (this.weaponflag == false && this.hero.equipments.length != 0) {
-            this.Update();
-            this.weaponbody = new egret.Shape();
-            this.weaponbody.touchEnabled = true;
-            this.weaponbody.graphics.beginFill(0x000000, 0.6);
-            this.weaponbody.graphics.drawRect(0, 0, 300, 240);
-            this.weaponbody.graphics.endFill();
-            this.addChild(this.weaponbody);
-            this.addChild(this.tfweaponname);
-            this.addChild(this.tfweaponATK);
-            this.addChild(this.tfweaponCON);
-            this.addChild(this.tfweaponDEX);
-            this.addChild(this.tfweaponMAG);
-            this.addChild(this.tfweaponSPD);
-            this.addChild(this.tfweaponSTR);
-
-            this.tfweaponname.text = this.hero.equipments[0].name;
-            this.tfweaponname.x = 20;
-            this.tfweaponname.y = 30;
-
-            this.tfweaponATK.text = "附加伤害：" + this.hero.equipments[0]._attack;
-            this.tfweaponATK.x = 20;
-            this.tfweaponATK.y = 55;
-
-            this.tfweaponSTR.text = "附加形状：" + this.hero.equipments[0].STR;
-            this.tfweaponSTR.x = 20;
-            this.tfweaponSTR.y = 80;
-
-            this.tfweaponCON.text = "附加面积：" + this.hero.equipments[0].CON;
-            this.tfweaponCON.x = 20;
-            this.tfweaponCON.y = 105;
-
-            this.tfweaponMAG.text = "附加抽象：" + this.hero.equipments[0].MAG;
-            this.tfweaponMAG.x = 20;
-            this.tfweaponMAG.y = 130;
-
-            this.tfweaponDEX.text = "附加稳定：" + this.hero.equipments[0].DEX;
-            this.tfweaponDEX.x = 20;
-            this.tfweaponDEX.y = 155;
-
-            this.tfweaponSPD.text = "附加速度：" + this.hero.equipments[0].SPD;
-            this.tfweaponSPD.x = 20;
-            this.tfweaponSPD.y = 180;
-
-            this.weaponflag = true;
+     
+            this.showWeaponpanel();
         }
         else {
-
-            if (this.weaponflag == true && this.hero.equipments.length != 0) {
+            if (this.weaponflag == true ) {
                 this.disshowWeaponpanel();
-
             }
-
         }
     }
 
-    disshowWeaponpanel() {
+    showWeaponpanel() {
 
+        this.weaponflag = true;
+        this.weaponbody = new egret.Shape();
+        this.weaponbody.touchEnabled = true;
+        this.weaponbody.graphics.beginFill(0x000000, 0.5);
+        this.weaponbody.graphics.drawRect(0, 0, 300, 240);
+        this.weaponbody.graphics.endFill();
+
+        this.addChild(this.weaponbody);
+        this.addChild(this.tfweaponname);
+        this.addChild(this.tfweaponATK);
+        this.addChild(this.tfweaponCON);
+        this.addChild(this.tfweaponDEX);
+        this.addChild(this.tfweaponMAG);
+        this.addChild(this.tfweaponSPD);
+        this.addChild(this.tfweaponSTR);
+
+        this.tfweaponname.text = this.hero.equipments[0].name;
+        this.tfweaponname.x = 20;
+        this.tfweaponname.y = 30;
+
+        this.tfweaponATK.text = "附加伤害：" + this.hero.equipments[0]._attack;
+        this.tfweaponATK.x = 20;
+        this.tfweaponATK.y = 55;
+
+        this.tfweaponSTR.text = "附加形状：" + this.hero.equipments[0].STR;
+        this.tfweaponSTR.x = 20;
+        this.tfweaponSTR.y = 80;
+
+        this.tfweaponCON.text = "附加面积：" + this.hero.equipments[0].CON;
+        this.tfweaponCON.x = 20;
+        this.tfweaponCON.y = 105;
+
+        this.tfweaponMAG.text = "附加抽象：" + this.hero.equipments[0].MAG;
+        this.tfweaponMAG.x = 20;
+        this.tfweaponMAG.y = 130;
+
+        this.tfweaponDEX.text = "附加稳定：" + this.hero.equipments[0].DEX;
+        this.tfweaponDEX.x = 20;
+        this.tfweaponDEX.y = 155;
+
+        this.tfweaponSPD.text = "附加速度：" + this.hero.equipments[0].SPD;
+        this.tfweaponSPD.x = 20;
+        this.tfweaponSPD.y = 180;
+
+    }
+
+
+    disshowWeaponpanel() {
+        
+        this.weaponflag = false;
         this.removeChild(this.tfweaponname);
         this.removeChild(this.tfweaponATK);
         this.removeChild(this.tfweaponCON);
@@ -237,6 +244,8 @@ class PropertyPanel extends egret.DisplayObjectContainer {
         this.removeChild(this.tfquality);
         this.removeChild(this.tfSPD);
         this.removeChild(this.tfSTR);
+      
+        //this.disshowWeaponpanel();
 
     }
 

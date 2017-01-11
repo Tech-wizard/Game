@@ -51,7 +51,7 @@ var GameScene = (function () {
         var gridX = x;
         var gridY = y;
         var astar = new AStar();
-        var grid = new Grid(12, 16, config);
+        var grid = new Grid(12, 16, testmap);
         grid.setStartNode(playerX, playerY);
         grid.setEndNode(gridX, gridY);
         //console.log(grid._nodes);
@@ -62,31 +62,24 @@ var GameScene = (function () {
             var path = astar._path;
             var current = path.shift();
             this.ticker = function () {
-                playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE);
-                playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE);
-                // if (current.x - playerX > 0) {
-                //     var tempX: number = 1;
+                playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE + 0.5);
+                playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE + 0.5);
+                // playerX = Math.ceil(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE);
+                // playerY = Math.ceil(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE);
+                var diffX = TileMap.TILE_SPEED * (current.x - playerX);
+                var diffY = TileMap.TILE_SPEED * (current.y - playerY);
+                GameScene.getCurrentScene().player._body.x += diffX;
+                GameScene.getCurrentScene().player._body.y += diffY;
+                // if (Math.abs(GameScene.getCurrentScene().player._body.x - TileMap.TILE_SIZE * current.x) < TileMap.TILE_SPEED) {
                 // }
-                // if (current.x - playerX < 0) {
-                //     var tempX: number = -1;
-                // }
-                // if (current.y - playerY > 0) {
-                //     var tempY: number = 1;
-                // }
-                // if (current.y - playerY < 0) {
-                //     var tempY: number = -1;
-                // }
-                GameScene.getCurrentScene().player._body.x += TileMap.TILE_SPEED * (current.x - playerX);
-                GameScene.getCurrentScene().player._body.y += TileMap.TILE_SPEED * (current.y - playerY);
-                //  GameScene.getCurrentScene().player._body.x += 3 * (current.x - playerX);
-                // GameScene.getCurrentScene().player._body.y += 3 * (current.y - playerY);
                 if (playerX == current.x && playerY == current.y) {
-                    // var tween = egret.Tween.get(GameScene.getCurrentScene().player._body);
-                    // tween.to ( {x:current.x * TileMap.TILE_SIZE,y:current.y * TileMap.TILE_SIZE}, 100 );
-                    GameScene.getCurrentScene().player._body.x = current.x * TileMap.TILE_SIZE;
-                    GameScene.getCurrentScene().player._body.y = current.y * TileMap.TILE_SIZE;
+                    egret.Ticker.getInstance().unregister(_this.ticker, _this);
+                    var tween = egret.Tween.get(GameScene.getCurrentScene().player._body);
+                    tween.to({ x: current.x * TileMap.TILE_SIZE, y: current.y * TileMap.TILE_SIZE }, 100);
+                    egret.Ticker.getInstance().register(_this.ticker, _this);
+                    // GameScene.getCurrentScene().player._body.x = current.x * TileMap.TILE_SIZE;
+                    // GameScene.getCurrentScene().player._body.y = current.y * TileMap.TILE_SIZE;
                     if (astar._path.length == 0) {
-                        console.log("寻路完毕");
                         egret.Ticker.getInstance().unregister(_this.ticker, _this);
                         console.log("结束移动");
                         callback();
@@ -97,10 +90,16 @@ var GameScene = (function () {
                 }
             };
             egret.Ticker.getInstance().register(this.ticker, this);
+            playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE + 0.5);
+            playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE + 0.5);
         }
     };
     p.stopMove = function (callback) {
+        var playerX = Math.floor(GameScene.getCurrentScene().player._body.x / TileMap.TILE_SIZE + 0.5);
+        var playerY = Math.floor(GameScene.getCurrentScene().player._body.y / TileMap.TILE_SIZE + 0.5);
         egret.Ticker.getInstance().unregister(this.ticker, this);
+        GameScene.getCurrentScene().player._body.x = playerX * TileMap.TILE_SIZE;
+        GameScene.getCurrentScene().player._body.y = playerY * TileMap.TILE_SIZE;
         egret.setTimeout(function () {
             console.log("中断移动");
             callback();
@@ -123,7 +122,6 @@ var UIScene = (function () {
     p.gameMenu = function () {
         var stageW = 640;
         var stageH = 1136;
-        console.log(stageW, stageH);
         var BlackMask = new egret.Shape();
         BlackMask.graphics.beginFill(0x000000, 1);
         BlackMask.graphics.drawRect(0, 0, stageW, stageH);
@@ -252,13 +250,13 @@ var UIScene = (function () {
             switch (_this.ad) {
                 case "sanjiao_png":
                     console.log("sanjiao");
-                    _this.hero = SetTriangle();
+                    _this.hero = SetTriangle(0);
                     break;
                 case "fangkuai_png":
-                    _this.hero = SetSquare();
+                    _this.hero = SetSquare(0);
                     break;
                 case "zhengyuan_png":
-                    _this.hero = SetCircle();
+                    _this.hero = SetCircle(0);
                     break;
             }
             GameScene.getCurrentScene().main.removeChild(pick);
@@ -283,13 +281,13 @@ var UIScene = (function () {
             switch (_this.ad) {
                 case "sanjiao_png":
                     console.log("sanjiao");
-                    _this.hero = SetTriangle();
+                    _this.hero = SetTriangle(0);
                     break;
                 case "fangkuai_png":
-                    _this.hero = SetSquare();
+                    _this.hero = SetSquare(0);
                     break;
                 case "zhengyuan_png":
-                    _this.hero = SetCircle();
+                    _this.hero = SetCircle(0);
                     break;
             }
             GameScene.getCurrentScene().main.removeChild(pick);
@@ -314,13 +312,13 @@ var UIScene = (function () {
             switch (_this.ad) {
                 case "sanjiao_png":
                     console.log("sanjiao");
-                    _this.hero = SetTriangle();
+                    _this.hero = SetTriangle(0);
                     break;
                 case "fangkuai_png":
-                    _this.hero = SetSquare();
+                    _this.hero = SetSquare(0);
                     break;
                 case "zhengyuan_png":
-                    _this.hero = SetCircle();
+                    _this.hero = SetCircle(0);
                     break;
             }
             GameScene.getCurrentScene().main.removeChild(pick);
@@ -370,31 +368,34 @@ var UIScene = (function () {
                 GameScene.getCurrentScene().main.addChild(pp);
             }
         }, this);
-        var Dpanel_1 = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了，去找还有希望被拯救的形状吧");
-        var Dpanel_2 = new DialoguePanel("我还有救，但变得不规则好像也没什么不好，先跟我较量看看吧");
+        var Dpanel_1 = new DialoguePanel("年轻纯种的纯形战士，我已经被腐化了\n去找还有希望被拯救的形状吧");
+        var Dpanel_2 = new DialoguePanel("变得不规则好像也没什么不好\n先跟我较量看看吧");
         this.dp1 = Dpanel_1;
         this.dp2 = Dpanel_2;
         var NPC_1 = new NPC("NPC_1", "npc_1_png", TileMap.TILE_SIZE * 4, TileMap.TILE_SIZE * 4, this.dp1);
         var NPC_2 = new NPC("NPC_2", "npc_2_png", TileMap.TILE_SIZE * 6, TileMap.TILE_SIZE * 12, this.dp2);
         this.dp1.linkNPC = NPC_1;
         this.dp2.linkNPC = NPC_2;
-        var task_0 = new Task("000", "对话任务", new NPCTalkTaskCondition());
+        this.NPC_1 = NPC_1;
+        this.NPC_2 = NPC_2;
+        var task_0 = new Task("000", "对话任务", new NPCTalkTaskCondition(), 0);
         task_0.fromNpcId = "NPC_1";
         task_0.toNpcId = "NPC_2";
         task_0.desc = "救援伤残纯形几何体";
-        task_0.NPCTaskTalk = "不要管我了，我不行了";
+        task_0.NPCTaskTalk = "纯形的未来由你来守护！";
         task_0.total = 1;
         task_0.status = TaskStatus.ACCEPTABLE;
-        var task_1 = new Task("001", "战斗任务", new KillMonsterTaskCondition());
+        var task_1 = new Task("001", "战斗任务", new KillMonsterTaskCondition(), 1);
         task_1.fromNpcId = "NPC_2";
         task_1.toNpcId = "NPC_2";
-        task_1.desc = "探寻下方的几何体";
+        task_1.desc = "寻访下方的几何体";
         task_1.NPCTaskTalk = "哈哈哈哈哈，放荡不羁";
         task_1.total = 1;
         task_1.status = TaskStatus.UNACCEPTABLE;
         TaskService.getInstance().addTask(task_0);
         TaskService.getInstance().addTask(task_1);
         var mainPanel = new TaskPanel(50, 850);
+        this.taskPanel = mainPanel;
         TaskService.getInstance().addObserver(mainPanel);
         TaskService.getInstance().addObserver(NPC_1);
         TaskService.getInstance().addObserver(NPC_2);
@@ -405,13 +406,27 @@ var UIScene = (function () {
         // this.addChild(monster_1);
         // monster_1.body.x = 350;
         // monster_1.body.y = 600;
-        //var scenceService:SceneService = new SceneService();
-        //SceneService.getInstance().addObserver(monster_1);
+        var monster_1 = new Monster("buguize_2_png", "001");
+        SceneService.getInstance().addObserver(monster_1);
         SceneService.getInstance().addObserver(task_1.condition);
-        this.item = new Item("五角星型残骸", "star_png", 5, TileMap.TILE_SIZE * 11, TileMap.TILE_SIZE * 0);
+        monster_1.x = TileMap.TILE_SIZE * 4;
+        monster_1.y = TileMap.TILE_SIZE * 10;
+        GameScene.getCurrentScene().main.addChild(monster_1);
+        var monster_2 = new Monster("buguize_2_png", "001");
+        SceneService.getInstance().addObserver(monster_2);
+        monster_1.x = TileMap.TILE_SIZE * 6;
+        monster_1.y = TileMap.TILE_SIZE * 13;
+        GameScene.getCurrentScene().main.addChild(monster_2);
+        var monster_3 = new Monster("buguize_2_png", "001");
+        SceneService.getInstance().addObserver(monster_3);
+        monster_1.x = TileMap.TILE_SIZE * 5;
+        monster_1.y = TileMap.TILE_SIZE * 12;
+        GameScene.getCurrentScene().main.addChild(monster_3);
+        this.item = new Item("五角星型残骸", "star_png", 5, TileMap.TILE_SIZE * 10, TileMap.TILE_SIZE * 1);
         var player = new Player(this.ad);
         GameScene.getCurrentScene().player = player;
         var map = new TileMap(GameScene.getCurrentScene().player);
+        this.map = map;
         GameScene.getCurrentScene().main.addChild(map);
         GameScene.getCurrentScene().main.addChild(GameScene.getCurrentScene().player);
         GameScene.getCurrentScene().player.idle();
@@ -421,6 +436,46 @@ var UIScene = (function () {
         GameScene.getCurrentScene().main.addChild(this.dp1);
         GameScene.getCurrentScene().main.addChild(this.dp2);
         GameScene.getCurrentScene().main.addChild(this.item);
+        egret.setTimeout(function () {
+            if (task_1.status == TaskStatus.SUBMITED) {
+                GameScene.getCurrentScene().main.removeChildren();
+                UIScene.getCurrentScene().gamebadend();
+            }
+        }, this, 500);
+    };
+    p.gameContinue = function () {
+        var stageW = 640;
+        var stageH = 1136;
+        var BlackMask = new egret.Shape();
+        BlackMask.graphics.beginFill(0x000000, 1);
+        BlackMask.graphics.drawRect(0, 0, stageW, stageH);
+        BlackMask.graphics.endFill();
+        BlackMask.width = stageW;
+        BlackMask.height = stageH;
+        GameScene.getCurrentScene().main.addChild(BlackMask);
+        var equipmentButtun = new egret.TextField();
+        equipmentButtun.text = "状态";
+        equipmentButtun.size = 40;
+        equipmentButtun.x = 280;
+        equipmentButtun.y = 1000;
+        GameScene.getCurrentScene().main.addChild(equipmentButtun);
+        equipmentButtun.touchEnabled = true;
+        equipmentButtun.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+            if (PropertyPanel.flag == 0) {
+                console.log(PropertyPanel.flag);
+                var pp = new PropertyPanel(UIScene.getCurrentScene().hero);
+                GameScene.getCurrentScene().main.addChild(pp);
+            }
+        }, this);
+        GameScene.getCurrentScene().main.addChild(this.map);
+        GameScene.getCurrentScene().main.addChild(GameScene.getCurrentScene().player);
+        GameScene.getCurrentScene().player.idle();
+        GameScene.getCurrentScene().main.addChild(this.taskPanel);
+        GameScene.getCurrentScene().main.addChild(this.NPC_1);
+        GameScene.getCurrentScene().main.addChild(this.NPC_2);
+        GameScene.getCurrentScene().main.addChild(this.dp1);
+        GameScene.getCurrentScene().main.addChild(this.dp2);
+        //GameScene.getCurrentScene().main.addChild(this.item);
     };
     p.gamebadend = function () {
         var no = new egret.Bitmap();
@@ -468,6 +523,17 @@ var UIScene = (function () {
         back.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
             GameScene.getCurrentScene().main.removeChildren();
             UIScene.getCurrentScene().gameMenu();
+        }, this);
+        var bcontinue = new egret.TextField();
+        bcontinue.text = "继续游戏";
+        bcontinue.size = 30;
+        bcontinue.touchEnabled = true;
+        bcontinue.y = 800;
+        bcontinue.x = 250;
+        GameScene.getCurrentScene().main.addChild(bcontinue);
+        bcontinue.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+            GameScene.getCurrentScene().main.removeChildren();
+            UIScene.getCurrentScene().gameContinue();
         }, this);
     };
     return UIScene;

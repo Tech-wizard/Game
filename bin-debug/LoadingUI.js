@@ -30,6 +30,7 @@ var LoadingUI = (function (_super) {
     __extends(LoadingUI, _super);
     function LoadingUI() {
         _super.call(this);
+        this.loadmap = new egret.Bitmap();
         this.createView();
     }
     var d = __define,c=LoadingUI,p=c.prototype;
@@ -40,6 +41,10 @@ var LoadingUI = (function (_super) {
         this.textField.width = 480;
         this.textField.height = 100;
         this.textField.textAlign = "center";
+        this.loadmap.texture = RES.getRes("preloading_gif");
+        this.addChild(this.loadmap);
+        this.loadmap.width = 640;
+        this.loadmap.height = 1136;
     };
     p.setProgress = function (current, total) {
         this.textField.text = "Loading..." + current + "/" + total;
