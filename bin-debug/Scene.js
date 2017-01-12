@@ -335,7 +335,7 @@ var UIScene = (function () {
         rect.graphics.drawRect(0, 0, 640, 1136);
         rect.graphics.endFill();
         GameScene.getCurrentScene().main.addChild(rect);
-        textField.text = "作者 14081216 白宇昆\n这是一款半即时的战棋对抗游戏\n改编的刘慈欣的《镜子》作为剧情背景\n在二维位面里\n形状越正，血统越纯\n借几何喻人，反应现实\n未来可能会加入的新细节\n根据随机的颜色改变敌人的属性\nR攻击撞击力\nG连接深入能力\nB特殊攻击能力\n六边形，三角形等对战地图";
+        textField.text = "作者 14081216 白宇昆\n这是一款半即时的战棋对抗游戏\n改编的刘慈欣的《镜子》作为剧情背景\n在二维位面里\n形状越正，血统越纯\n面积=血量，边长=速度\n借几何喻人，反应现实\n未来可能会加入的新细节\n根据随机的颜色改变敌人的属性\nR攻击撞击力\nG连接深入能力\nB特殊攻击能力\n六边形，三角形等对战地图";
         GameScene.getCurrentScene().main.addChild(textField);
         textField.size = 30;
         textField.y = 200;
@@ -406,22 +406,6 @@ var UIScene = (function () {
         // this.addChild(monster_1);
         // monster_1.body.x = 350;
         // monster_1.body.y = 600;
-        var monster_1 = new Monster("buguize_2_png", "001");
-        SceneService.getInstance().addObserver(monster_1);
-        SceneService.getInstance().addObserver(task_1.condition);
-        monster_1.x = TileMap.TILE_SIZE * 4;
-        monster_1.y = TileMap.TILE_SIZE * 10;
-        GameScene.getCurrentScene().main.addChild(monster_1);
-        var monster_2 = new Monster("buguize_2_png", "001");
-        SceneService.getInstance().addObserver(monster_2);
-        monster_1.x = TileMap.TILE_SIZE * 6;
-        monster_1.y = TileMap.TILE_SIZE * 13;
-        GameScene.getCurrentScene().main.addChild(monster_2);
-        var monster_3 = new Monster("buguize_2_png", "001");
-        SceneService.getInstance().addObserver(monster_3);
-        monster_1.x = TileMap.TILE_SIZE * 5;
-        monster_1.y = TileMap.TILE_SIZE * 12;
-        GameScene.getCurrentScene().main.addChild(monster_3);
         this.item = new Item("五角星型残骸", "star_png", 5, TileMap.TILE_SIZE * 10, TileMap.TILE_SIZE * 1);
         var player = new Player(this.ad);
         GameScene.getCurrentScene().player = player;
@@ -430,18 +414,37 @@ var UIScene = (function () {
         GameScene.getCurrentScene().main.addChild(map);
         GameScene.getCurrentScene().main.addChild(GameScene.getCurrentScene().player);
         GameScene.getCurrentScene().player.idle();
-        GameScene.getCurrentScene().main.addChild(mainPanel);
+        var monster_1 = new Monster("buguize_2_png", "003");
+        SceneService.getInstance().addObserver(monster_1);
+        SceneService.getInstance().addObserver(task_1.condition);
+        monster_1.x = TileMap.TILE_SIZE * randomnum(4, 2);
+        monster_1.y = TileMap.TILE_SIZE * 10;
+        GameScene.getCurrentScene().main.addChild(monster_1);
+        this.map.replaceMap(monster_1);
+        var monster_2 = new Monster("buguize_2_png", "003");
+        SceneService.getInstance().addObserver(monster_2);
+        monster_2.x = TileMap.TILE_SIZE * 6;
+        monster_2.y = TileMap.TILE_SIZE * 9;
+        GameScene.getCurrentScene().main.addChild(monster_2);
+        this.map.replaceMap(monster_2);
+        var monster_3 = new Monster("buguize_2_png", "003");
+        SceneService.getInstance().addObserver(monster_3);
+        monster_3.x = TileMap.TILE_SIZE * 5;
+        monster_3.y = TileMap.TILE_SIZE * 13;
+        GameScene.getCurrentScene().main.addChild(monster_3);
+        this.map.replaceMap(monster_3);
         GameScene.getCurrentScene().main.addChild(NPC_1);
         GameScene.getCurrentScene().main.addChild(NPC_2);
         GameScene.getCurrentScene().main.addChild(this.dp1);
         GameScene.getCurrentScene().main.addChild(this.dp2);
         GameScene.getCurrentScene().main.addChild(this.item);
+        GameScene.getCurrentScene().main.addChild(mainPanel);
         egret.setTimeout(function () {
             if (task_1.status == TaskStatus.SUBMITED) {
                 GameScene.getCurrentScene().main.removeChildren();
                 UIScene.getCurrentScene().gamebadend();
             }
-        }, this, 500);
+        }, this, 2000);
     };
     p.gameContinue = function () {
         var stageW = 640;

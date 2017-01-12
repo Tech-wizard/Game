@@ -49,10 +49,6 @@ var Battle = (function (_super) {
         this.addChild(this.battleinfo);
         this.battleinfo.x = 100;
         this.battleinfo.y = 740;
-        this.addChild(this.timerbar);
-        this.timerbar.x = 200;
-        this.timerbar.y = 900;
-        this.timerbar.text = "AB:-------------------------";
         switch (hero.name) {
             case "三角":
                 this._herobody.texture = RES.getRes("sanjiao_png");
@@ -145,6 +141,22 @@ var Battle = (function (_super) {
     p.upDateBattelMap = function () {
         for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
+                var block = this._block[i][j];
+                var type = this._blockType[i][j];
+                // let config = {
+                //     [BlockType.notmove]:"block_0_png",
+                //     [BlockType.upmove]:"block_1_png",
+                //     [BlockType.notmove]:"block_3_png",
+                //     [BlockType.notmove]:"block2_png",
+                //     [BlockType.notmove]:"block2_png",
+                //     [BlockType.notmove]:"block2_png",
+                //     [BlockType.notmove]:"block2_png",
+                //     [BlockType.notmove]:"block2_png",
+                // }
+                //约定优于配置
+                var textureName = 'block_' + type + '_png';
+                // let textureName = config[type];
+                block.texture = RES.getRes(textureName);
                 switch (this._blockType[i][j]) {
                     case BlockType.notmove:
                         this._block[i][j].texture = RES.getRes("block2_png");
@@ -219,9 +231,14 @@ var Battle = (function (_super) {
         this._herobody.height = 150;
         this._heroHP.text = "HP:";
         this._heroMP.text = "MP:";
+        this.addChild(this.timerbar);
+        this.timerbar.x = 200;
+        this.timerbar.y = 900;
+        this.timerbar.text = "AB:";
         for (var i = 0; i < 25; i++) {
             this._heroHP.text += "|";
             this._heroMP.text += "-";
+            this.timerbar.text += "-";
         }
         this._heroHP.x = 200;
         this._heroHP.y = 800;
@@ -249,7 +266,7 @@ var Battle = (function (_super) {
         this.addChild(this._enemyMP);
     };
     p.updateALLState = function () {
-        var hptemp, mptemp;
+        var hptemp, mptemp, abtemp;
         hptemp = Math.floor(this.hero.curHP.value / this.hero._maxHP.value * 25);
         mptemp = Math.floor(this.hero.curMP.value / this.hero._maxMP.value * 25);
         this._heroHP.textAlign = "justify";
@@ -648,20 +665,20 @@ var Battle = (function (_super) {
         }, this, 1500);
     };
     p.heroTimer = function () {
-        var _this = this;
-        this.timer = new egret.Timer(1000, 0);
+        this.hero.SPD.value;
+        this.timer = new egret.Timer(100, 0);
         this.timer.addEventListener(egret.TimerEvent.TIMER, this.timerFunc, this);
         this.timer.start();
-        this.stage.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-            if (_this.timer.running) {
-                _this.timer.stop();
-            }
-            else {
-                _this.timer.start();
-            }
-        }, this);
+        // this.stage.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+        //     if(this.timer.running){
+        //         this.timer.stop();
+        //     }else{
+        //         this.timer.start();
+        //     }
+        // }, this); 
     };
     p.timerFunc = function (event) {
+        this.timetemp++;
     };
     return Battle;
 }(egret.DisplayObjectContainer));

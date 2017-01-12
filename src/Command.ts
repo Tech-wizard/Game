@@ -53,6 +53,7 @@ class FightCommand implements Command {
         //     callback();
         // }
         //     }, this, 500)
+
         var batteEnd = egret.setInterval(() => {
             if (battle.judgeEnemyDeath() == true) {
                 console.log("敌人死亡,结束战斗,升级变强");
@@ -147,6 +148,7 @@ class EquipCommand implements Command {
     }
 
     execute(callback: Function): void {
+
         var ruen_1: rune[] = [new rune(2), new rune(3)];
         this.item = new Equipment(this.name, this.ad, 1, this.atk, ruen_1);
         UIScene.getCurrentScene().hero.equip(this.item);
@@ -157,6 +159,7 @@ class EquipCommand implements Command {
 
     cancel(callback: Function) {
 
+        UIScene.getCurrentScene().hero.equipments = [];
         callback();
 
     }
@@ -169,10 +172,12 @@ class CommandList {
     private _frozen = false;
 
     addCommand(command: Command) {
+
         this._list.push(command);
     }
 
     cancel() {
+
         this._frozen = true;
         var command = this.currentCommand;
         egret.setTimeout(() => {

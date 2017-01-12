@@ -331,23 +331,24 @@ class Monster extends egret.DisplayObjectContainer implements Observer {
         this.body.width= TileMap.TILE_SIZE;
         this.body.height = TileMap.TILE_SIZE;
         this.linkTask = linkTask;
+        this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onButtonClick, this);
         this.addChild(this.body);
 
-        // egret.Ticker.getInstance().register(() => {
+        egret.Ticker.getInstance().register(() => {
 
-        //     if (this.count < 5) {
-        //         this.body.scaleY *= 1.01;
-        //     }
-        //     else if (this.count < 10 || this.count >= 5) {
-        //         this.body.scaleY /= 1.01;
-        //     }
-        //     this.count += 0.5;
-        //     if (this.count >= 10) {
-        //         this.count = 0;
-        //     }
+            if (this.count < 5) {
+                this.body.scaleY *= 1.01;
+            }
+            else if (this.count < 10 || this.count >= 5) {
+                this.body.scaleY /= 1.01;
+            }
+            this.count += 0.5;
+            if (this.count >= 10) {
+                this.count = 0;
+            }
 
-        // }, this);
+        }, this);
     }
 
     onButtonClick() {
@@ -365,9 +366,15 @@ class Monster extends egret.DisplayObjectContainer implements Observer {
     onChange() {
 
         if (this.linkTask != null) {
-            if (TaskService.getInstance().taskList[this.linkTask].status == TaskStatus.DURING) {
+            let task = TaskService.getInstance().taskList[this.linkTask];
+
+            if (!task){
+                console.error('missing task:',this.linkTask);
+            }
+            if (task.status == TaskStatus.DURING) {
                 SceneService.getInstance().notify(TaskService.getInstance().taskList[this.linkTask]);
             }
+
         }
     }
 }

@@ -49,6 +49,27 @@ var TileMap = (function (_super) {
             //}
         }, this);
     };
+    // private timerFunc() {
+    //     this._i++;
+    //     this.moveX[this._i] = this._astar._path[this._i].x * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
+    //     this.moveY[this._i] = this._astar._path[this._i].y * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
+    //     this._player.move(this.moveX[this._i], this.moveY[this._i]);
+    //     egret.Tween.get(this._player._body).to({ x: this.moveX[this._i], y: this.moveY[this._i] }, 600).wait(10).call(function () { this._player.idle() }, this);
+    // }
+    // private timerComFunc() {
+    //     console.log("计时结束");
+    // }
+    p.addMonster = function () {
+    };
+    p.replaceMap = function (object) {
+        var monstersXY;
+        for (var i = 0; i < testmap.length; i++) {
+            if (testmap[i].walkable == false && testmap[i].x == object.x / TileMap.TILE_SIZE && testmap[i].y == object.y / TileMap.TILE_SIZE) {
+                testmap[i].walkable = true;
+                testmap[i].image = "Black_png";
+            }
+        }
+    };
     TileMap.TILE_SIZE = 53;
     TileMap.TILE_BATTLE_SIZE = 80;
     TileMap.TILE_SPEED = 4;
@@ -57,6 +78,9 @@ var TileMap = (function (_super) {
     return TileMap;
 }(egret.DisplayObjectContainer));
 egret.registerClass(TileMap,'TileMap');
+function randomnum(a, b) {
+    return a + Math.floor(Math.random() * b);
+}
 function checkNeighborWalls(tileData) {
     var count = 0;
     if (tileData.x == 0 || tileData.x == TileMap.TILE_X) {
@@ -103,7 +127,7 @@ function checkNeighborWalls(tileData) {
 }
 function randomMap(map) {
     map.forEach(function (element) {
-        switch (Math.floor(Math.random() * 100) % 4) {
+        switch (Math.floor(Math.random() * 100) % 5) {
             case 0:
                 element.walkable = true;
                 element.image = "Black_png";
@@ -119,6 +143,10 @@ function randomMap(map) {
             case 3:
                 element.walkable = false;
                 element.image = "White_png";
+                break;
+            case 4:
+                element.walkable = true;
+                element.image = "Black_png";
                 break;
         }
         if (element.x == 0 && element.y == 0) {

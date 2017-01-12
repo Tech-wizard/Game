@@ -40,6 +40,7 @@ class Battle extends egret.DisplayObjectContainer {
     _numRows: number;
     timer:egret.Timer;
     timerbar:egret.TextField = new egret.TextField();
+    timetemp:number;
     
     chance: number = 0;  //该回合行动次数
 
@@ -134,6 +135,7 @@ class Battle extends egret.DisplayObjectContainer {
         this.heroSkills[2].touchEnabled = true;
         this.heroSkills[3].touchEnabled = true;
         this.heroSkills[4].touchEnabled = true;
+
         //egret.setInterval(()=>{this.randommove(this.heropos)},this,2000);
         //egret.setInterval(() => { this.enemyturn() }, this, 3000);
 
@@ -172,57 +174,77 @@ class Battle extends egret.DisplayObjectContainer {
         for (var i = 0; i < this._numCols; i++) {
             for (var j = 0; j < this._numRows; j++) {
 
-                switch (this._blockType[i][j]) {
+                let block = this._block[i][j];
+                let type = this._blockType[i][j];
+
+                let config = {
+                    [BlockType.notmove]:"block_0_png",
+                    [BlockType.upmove]:"block_1_png",
+                    [BlockType.notmove]:"block_3_png",
+                    [BlockType.notmove]:"block2_png",
+                    [BlockType.notmove]:"block2_png",
+                    [BlockType.notmove]:"block2_png",
+                    [BlockType.notmove]:"block2_png",
+                    [BlockType.notmove]:"block2_png",
+                }
+
+                //约定优于配置
+
+                let textureName = 'block_' + type + '_png';
+                // let textureName = config[type];
+                // block.texture = RES.getRes(textureName);
+
+                switch (type) {
                     case BlockType.notmove:
-                        this._block[i][j].texture = RES.getRes("block2_png");
+                        block.texture = RES.getRes("block2_png");
                         break;
 
                     case BlockType.upmove:
-                        this._block[i][j].texture = RES.getRes("up_png");
+                       block.texture = RES.getRes("up_png");
                         break;
 
                     case BlockType.downmove:
-                        this._block[i][j].texture = RES.getRes("down_png");
+                        block.texture = RES.getRes("down_png");
                         break;
 
                     case BlockType.leftmove:
-                        this._block[i][j].texture = RES.getRes("left_png");
+                        block.texture = RES.getRes("left_png");
                         break;
 
                     case BlockType.rightmove:
-                        this._block[i][j].texture = RES.getRes("right_png");
+                       block.texture = RES.getRes("right_png");
                         break;
 
                     case BlockType.uproll:
-                        this._block[i][j].texture = RES.getRes("up_png");
+                        block.texture = RES.getRes("up_png");
                         break;
 
                     case BlockType.downroll:
-                        this._block[i][j].texture = RES.getRes("down_png");
+                        block.texture = RES.getRes("down_png");
                         break;
 
                     case BlockType.leftroll:
-                        this._block[i][j].texture = RES.getRes("left_png");
+                       block.texture = RES.getRes("left_png");
                         break;
 
                     case BlockType.rightroll:
-                        this._block[i][j].texture = RES.getRes("right_png");
+                        block.texture = RES.getRes("right_png");
                         break;
 
                     case BlockType.upjump:
-                        this._block[i][j].texture = RES.getRes("up_png");
+                        block.texture = RES.getRes("up_png");
                         break;
 
                     case BlockType.downjump:
-                        this._block[i][j].texture = RES.getRes("down_png");
+                       block.texture = RES.getRes("down_png");
                         break;
 
                     case BlockType.leftjump:
-                        this._block[i][j].texture = RES.getRes("left_png");
+                        block.texture = RES.getRes("left_png");
                         break;
 
                     case BlockType.rightjump:
-                        this._block[i][j].texture = RES.getRes("right_png");
+                        block.texture = RES.getRes("right_png");
                         break;
 
                 }
@@ -308,8 +330,9 @@ class Battle extends egret.DisplayObjectContainer {
         this.addChild(this._enemyMP);
     }
 
+
     updateALLState() {
-        var hptemp: number, mptemp: number;
+        var hptemp: number, mptemp: number,abtemp:number;
         hptemp = Math.floor(this.hero.curHP.value / this.hero._maxHP.value * 25);
         mptemp = Math.floor(this.hero.curMP.value / this.hero._maxMP.value * 25);
         this._heroHP.textAlign = "justify";
@@ -801,6 +824,7 @@ class Battle extends egret.DisplayObjectContainer {
     }
 
     enemyTurn() {
+
         this.randomMove(this.enemypos);
         egret.setTimeout(() => {
             this.enemyAttack();
@@ -808,28 +832,33 @@ class Battle extends egret.DisplayObjectContainer {
     }
 
     heroTimer() {
-        this.timer = new egret.Timer(1000, 0);
+        this.hero.SPD.value
+        this.timer = new egret.Timer(100, 0);
 
         this.timer.addEventListener(egret.TimerEvent.TIMER, this.timerFunc, this);
         
         this.timer.start();
    
-        this.stage.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
-            if(this.timer.running){
+        // this.stage.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+        //     if(this.timer.running){
               
-                this.timer.stop();
-            }else{
+        //         this.timer.stop();
+        //     }else{
           
-                this.timer.start();
-            }
-        }, this); 
+        //         this.timer.start();
+        //     }
+        // }, this); 
      
     }
 
     private timerFunc(event: egret.Event) {
-       
+
+       this.timetemp++;
+
     }
 }
+
+
 
 class Pos {
 
@@ -841,6 +870,7 @@ class Pos {
         this.y = y;
     }
 }
+
 
 
 class Enemy extends Hero {
@@ -855,6 +885,8 @@ class Enemy extends Hero {
     }
 }
 
+
+
 function setEnemy(level: number, ad: string): Enemy {
 
 
@@ -866,10 +898,6 @@ function setEnemy(level: number, ad: string): Enemy {
 
     return enemy;
 }
-
-
-
-
 
 
 

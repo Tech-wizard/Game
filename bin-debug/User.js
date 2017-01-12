@@ -189,7 +189,7 @@ var rune = (function () {
         this.MAG = 0; //魔力
         this.SPD = 0; //速度
         this.quality = quality;
-        switch (Math.floor(Math.random() * 4)) {
+        switch (Math.floor(Math.random() * 3)) {
             case 0:
                 this.STR += Math.floor(Math.random() * 6) * this.quality;
                 break;

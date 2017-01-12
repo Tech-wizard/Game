@@ -118,6 +118,7 @@ var EquipCommand = (function () {
         callback();
     };
     p.cancel = function (callback) {
+        UIScene.getCurrentScene().hero.equipments = [];
         callback();
     };
     return EquipCommand;

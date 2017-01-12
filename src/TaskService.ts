@@ -1,6 +1,8 @@
 interface EventEmitter {
+
     addObserver(observer: Observer);
     notify(task: Task);
+    
 }
 
 class TaskService implements EventEmitter {

@@ -244,6 +244,7 @@ egret.registerClass(DialoguePanel,'DialoguePanel');
 var Monster = (function (_super) {
     __extends(Monster, _super);
     function Monster(ad, linkTask) {
+        var _this = this;
         _super.call(this);
         this.count = 0;
         this.ad = ad;
@@ -252,20 +253,21 @@ var Monster = (function (_super) {
         this.body.width = TileMap.TILE_SIZE;
         this.body.height = TileMap.TILE_SIZE;
         this.linkTask = linkTask;
+        this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onButtonClick, this);
         this.addChild(this.body);
-        // egret.Ticker.getInstance().register(() => {
-        //     if (this.count < 5) {
-        //         this.body.scaleY *= 1.01;
-        //     }
-        //     else if (this.count < 10 || this.count >= 5) {
-        //         this.body.scaleY /= 1.01;
-        //     }
-        //     this.count += 0.5;
-        //     if (this.count >= 10) {
-        //         this.count = 0;
-        //     }
-        // }, this);
+        egret.Ticker.getInstance().register(function () {
+            if (_this.count < 5) {
+                _this.body.scaleY *= 1.01;
+            }
+            else if (_this.count < 10 || _this.count >= 5) {
+                _this.body.scaleY /= 1.01;
+            }
+            _this.count += 0.5;
+            if (_this.count >= 10) {
+                _this.count = 0;
+            }
+        }, this);
     }
     var d = __define,c=Monster,p=c.prototype;
     p.onButtonClick = function () {

@@ -54,8 +54,6 @@ class TileMap extends egret.DisplayObjectContainer {
             //                       this._player._body.x >= current.x * TileMap.TILE_SIZE - this._speed &&
             //                       this._player._body.y <= current.y * TileMap.TILE_SIZE + this._speed &&
             //                       this._player._body.y >= current.y * TileMap.TILE_SIZE - this._speed)
-
-
             // this._i = 1;
             // this.moveX[this._i] = this._astar._path[this._i].x * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
             // this.moveY[this._i] = this._astar._path[this._i].y * TileMap.TILE_SIZE + TileMap.TILE_SIZE / 2;
@@ -69,6 +67,7 @@ class TileMap extends egret.DisplayObjectContainer {
             // //开始计时
             // timer.start();
             //}
+
         }, this);
 
     }
@@ -85,6 +84,24 @@ class TileMap extends egret.DisplayObjectContainer {
     // private timerComFunc() {
     //     console.log("计时结束");
     // }
+
+    addMonster(){
+    
+    }
+
+    replaceMap(object: egret.DisplayObjectContainer) {
+        var monstersXY: number[];
+        for (var i = 0; i < testmap.length; i++) {
+            if (testmap[i].walkable == false && testmap[i].x == object.x / TileMap.TILE_SIZE && testmap[i].y == object.y / TileMap.TILE_SIZE) {
+                testmap[i].walkable = true;
+                testmap[i].image = "Black_png";
+            }
+        }
+    }
+}
+
+function randomnum(a: number, b: number) {       //a最小值，a+b最大值
+    return a + Math.floor(Math.random() * b);
 }
 
 function checkNeighborWalls(tileData: TileData) {
@@ -138,7 +155,7 @@ function checkNeighborWalls(tileData: TileData) {
 
 function randomMap(map: TileData[]) {
     map.forEach(element => {
-        switch (Math.floor(Math.random() * 100) % 4) {
+        switch (Math.floor(Math.random() * 100) % 5) {
             case 0:
                 element.walkable = true;
                 element.image = "Black_png";
@@ -154,6 +171,10 @@ function randomMap(map: TileData[]) {
             case 3:
                 element.walkable = false;
                 element.image = "White_png";
+                break;
+            case 4:
+                element.walkable = true;
+                element.image = "Black_png";
                 break;
         }
 
@@ -225,9 +246,11 @@ function createMap(map: TileData[]) {
 }
 
 
-function createWay(map: TileData[],x:number,y:number){
+function createWay(map: TileData[], x: number, y: number) {
 
 }
+
+
 
 var testmap: TileData[] = [
 
